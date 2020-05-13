@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		560637CE24697ECF00BAE0D5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 560637CD24697ECF00BAE0D5 /* main.cpp */; };
+		560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637D424697F2D00BAE0D5 /* MainProgram.C */; };
+		560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */; };
+		560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 560637E2246C73D300BAE0D5 /* InOut.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +26,16 @@
 
 /* Begin PBXFileReference section */
 		560637CA24697ECF00BAE0D5 /* HNGD_Xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HNGD_Xcode; sourceTree = BUILT_PRODUCTS_DIR; };
-		560637CD24697ECF00BAE0D5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		560637D424697F2D00BAE0D5 /* MainProgram.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = MainProgram.C; sourceTree = "<group>"; tabWidth = 2; };
+		560637D524697F2D00BAE0D5 /* 3_physics.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 3_physics.txt; sourceTree = "<group>"; };
+		560637D624697F2D00BAE0D5 /* 1_settings.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 1_settings.txt; sourceTree = "<group>"; };
+		560637D724697F2D00BAE0D5 /* HydrogenBehaviorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HydrogenBehaviorModel.h; sourceTree = "<group>"; };
+		560637D824697F2D00BAE0D5 /* 2_temperature.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 2_temperature.txt; sourceTree = "<group>"; };
+		560637D924697F2D00BAE0D5 /* input_check.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = input_check.txt; sourceTree = "<group>"; };
+		560637DA24697F2D00BAE0D5 /* 4_hydrogen.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 4_hydrogen.txt; sourceTree = "<group>"; };
+		560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = HydrogenBehaviorModel.C; sourceTree = "<group>"; tabWidth = 2; };
+		560637E2246C73D300BAE0D5 /* InOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InOut.cpp; sourceTree = "<group>"; };
+		560637E3246C73D300BAE0D5 /* InOut.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InOut.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +68,16 @@
 		560637CC24697ECF00BAE0D5 /* HNGD_Xcode */ = {
 			isa = PBXGroup;
 			children = (
-				560637CD24697ECF00BAE0D5 /* main.cpp */,
+				560637D624697F2D00BAE0D5 /* 1_settings.txt */,
+				560637D824697F2D00BAE0D5 /* 2_temperature.txt */,
+				560637D524697F2D00BAE0D5 /* 3_physics.txt */,
+				560637DA24697F2D00BAE0D5 /* 4_hydrogen.txt */,
+				560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */,
+				560637D724697F2D00BAE0D5 /* HydrogenBehaviorModel.h */,
+				560637D924697F2D00BAE0D5 /* input_check.txt */,
+				560637D424697F2D00BAE0D5 /* MainProgram.C */,
+				560637E2246C73D300BAE0D5 /* InOut.cpp */,
+				560637E3246C73D300BAE0D5 /* InOut.hpp */,
 			);
 			path = HNGD_Xcode;
 			sourceTree = "<group>";
@@ -119,7 +139,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				560637CE24697ECF00BAE0D5 /* main.cpp in Sources */,
+				560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */,
+				560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */,
+				560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
