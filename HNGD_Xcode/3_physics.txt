@@ -1,0 +1,18 @@
+1.11e3	 Kd0	s-1		    1.11e3
+0.46	 Ediss  eV/at		0.46
+2.75e-5	 Kn0	s-1		    2.75e-5
+0.5655	 Eth0	eV/mol 		0.5655
+4e-4	 Eth1 	eV/mol/K 	4e-4
+2e-7	 Eth2 	eV/mol/K^2	2e-7
+3e-10	 Eth3 	eV/mol/K^3	3e-10
+5.35e5	 Kmob0	s-1		    5.35e5
+1.6e-5	 Kth0	s-1		    1.6e-5
+0.9	     Eg	    eV/at		0.9
+2.94e4	 TSSp0	wt.ppm		30853
+2.71e4	 Qtssp	J/mol 		25249
+101999	 TSSd0	wt.ppm 		101999	/ 8.5e4
+35459	 Qtssd	J/mol 		35459	/ 31800
+1.08e-2	 Do 	cm2/s		1.08e-2	/ 2.17e-3	Zhang / Sawatzky
+0.46	 Ediff 	eV/at		0.46	/ 0.36		Zhang / Sawatzky
+25500	 Q*	    J/mol		25500	/ 25104
+0        tau    s
