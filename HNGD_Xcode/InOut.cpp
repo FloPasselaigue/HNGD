@@ -307,23 +307,22 @@ void InOut::writePhysicsInCheck(double * physicalParameters)
 
 void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint)
 {
-  ofstream output ;
-  output.open(path_exec + "output.csv", std::ios_base::app);
-  if(nbNodes>0)
-  {
+    ofstream output ;
+    output.open(path_exec + "output.csv", std::ios_base::app);
+
     hydrogen_behavior.print();
 
     /* HERE */
     std::vector<double> listVector[nbOutput];
     listVector[0] = hydrogen_behavior.returnTotalContentVector();
     listVector[1] = hydrogen_behavior.returnSolutionContentVector();
-//    listVector[2] = hydrogen_behavior.returnHydridesContentVector();
-//    listVector[3] = hydrogen_behavior.returnTemperatureVector();
-//    listVector[4] = hydrogen_behavior.returnTSSpVector();
-//    listVector[5] = hydrogen_behavior.returnTSSdVector();
-//    listVector[6] = hydrogen_behavior.returnKdVector();
-//    listVector[7] = hydrogen_behavior.returnKnVector();
-//    listVector[8] = hydrogen_behavior.returnFlux();
+    //    listVector[2] = hydrogen_behavior.returnHydridesContentVector();
+    //    listVector[3] = hydrogen_behavior.returnTemperatureVector();
+    //    listVector[4] = hydrogen_behavior.returnTSSpVector();
+    //    listVector[5] = hydrogen_behavior.returnTSSdVector();
+    //    listVector[6] = hydrogen_behavior.returnKdVector();
+    //    listVector[7] = hydrogen_behavior.returnKnVector();
+    //    listVector[8] = hydrogen_behavior.returnFlux();
 
 
     output << hydrogen_behavior.returnTimeStep() << "," << t << ","  ;
@@ -335,21 +334,11 @@ void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec
         output << ',' ;
     }
     output << "\n"   ;
-  }
 
-  else
-  {
-    double TSSp = hydrogen_behavior.returnTSSP();
-    double TSSd = hydrogen_behavior.returnTSSD();
-    double conc_hydrogen_sol = hydrogen_behavior.returnSolutionContent();
-    double conc_hydrogen_hyd = hydrogen_behavior.returnHydridesContent();
-    double conc_hydrogen_tot = hydrogen_behavior.returnTotalContent();
-    output<<t<<","<<temp<<","<<TSSp<<","<<TSSd<<","<<conc_hydrogen_sol<<","<<conc_hydrogen_hyd<<","<<conc_hydrogen_tot<< endl;
-  }
 
-  cout << "t= " << t << "s"<< endl;
+    cout << "t= " << t << "s"<< endl;
 
-  output.close();
+    output.close();
 }
 
 void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint)

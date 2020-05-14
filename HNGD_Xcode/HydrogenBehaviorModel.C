@@ -32,25 +32,16 @@ HydrogenBehaviorModel :: HydrogenBehaviorModel()
   _coeffFickVector       =  std::vector<double>(0.) ;
   _flux                  =  std::vector<double>(0.) ;
 
-  _solutionContent = 0. ;
-  _hydridesContent = 0. ;
-  _totalContent    = 0. ;
-  _temperature     = 0. ;
-  _temperatureGrad = 0. ;
-  _tssp            = 0. ;
-  _tssd            = 0. ;
-  _Kd              = 0. ;
-  _Kn              = 0. ;
-  _Kg              = 0. ;
-  _D0              = 0. ;
-  _Ediff           = 0. ;
-  _Qstar           = 0. ;
-
+  _D0     = 0. ;
+  _Ediff  = 0. ;
+  _Qstar  = 0. ;
   _Kd0    = 0. ;
   _Ediss  = 0. ;
   _Kn0    = 0. ;
   _Eth0   = 0. ;
   _Eth1   = 0. ;
+  _Eth2   = 0. ;
+  _Eth3   = 0. ;
   _Kmob0  = 0. ;
   _Kth0   = 0. ;
   _Eg     = 0. ;
@@ -98,35 +89,31 @@ void HydrogenBehaviorModel :: getInitialConditions(double* settings,double* phys
     _Qstar  = physicalParameters[16] ;
     _tau    = physicalParameters[17] ;
 
-    if(_nbNodes>0)
-    {
-        _positionsVector      .resize(_nbNodes);
-        _totalContentVector   .resize(_nbNodes,_totalContent);
-        _solutionContentVector.resize(_nbNodes,_totalContent);
-        _hydridesContentVector.resize(_nbNodes,0.);
-        _temperatureVector    .resize(_nbNodes,_temperature);
-        _tsspVector           .resize(_nbNodes,0.);
-        _tssdVector           .resize(_nbNodes,0.);
-        _KdVector             .resize(_nbNodes,0.);
-        _KnVector             .resize(_nbNodes,0.);
-        _KgVector             .resize(_nbNodes,0.);
-        _KmobVector           .resize(_nbNodes,0.);
-        _KthVector            .resize(_nbNodes,0.);
-        _f_alpha              .resize(_nbNodes,0.);
-        _lever                .resize(_nbNodes,0.);
-        _coeffFickVector      .resize(_nbNodes,0.);
-        _flux                 .resize(_nbNodes,0.);
+    _positionsVector      .resize(_nbNodes);
+    _totalContentVector   .resize(_nbNodes,_totalContent);
+    _solutionContentVector.resize(_nbNodes,_totalContent);
+    _hydridesContentVector.resize(_nbNodes,0.);
+    _temperatureVector    .resize(_nbNodes,_temperature);
+    _tsspVector           .resize(_nbNodes,0.);
+    _tssdVector           .resize(_nbNodes,0.);
+    _KdVector             .resize(_nbNodes,0.);
+    _KnVector             .resize(_nbNodes,0.);
+    _KgVector             .resize(_nbNodes,0.);
+    _KmobVector           .resize(_nbNodes,0.);
+    _KthVector            .resize(_nbNodes,0.);
+    _f_alpha              .resize(_nbNodes,0.);
+    _lever                .resize(_nbNodes,0.);
+    _coeffFickVector      .resize(_nbNodes,0.);
+    _flux                 .resize(_nbNodes,0.);
 
-        HydrogenBehaviorModel::computeLocations(0., _sampleLenght, _bias, _positionsVector);
+    HydrogenBehaviorModel::computeLocations(0., _sampleLenght, _bias, _positionsVector);
 
-        spatialeInterpolation(pos_hyd,  hyd_inp,  _positionsVector, _totalContentVector); // Hydrogen content profile
-        spatialeInterpolation(pos_hyd,  hyd_inp,  _positionsVector, _solutionContentVector);
-        spatialeInterpolation(pos_temp, temp_inp, _positionsVector, _temperatureVector); // Temperature profile
+    spatialeInterpolation(pos_hyd,  hyd_inp,  _positionsVector, _totalContentVector); // Hydrogen content profile
+    spatialeInterpolation(pos_hyd,  hyd_inp,  _positionsVector, _solutionContentVector);
+    spatialeInterpolation(pos_temp, temp_inp, _positionsVector, _temperatureVector); // Temperature profile
 
-    }
-
-//    if(settings[0]==1)
-//      computeInitEq();
+    if(settings[0]==1)
+      computeInitEq();
 
     if(_dt<=0) // adaptative time step
       _dt = computeTimeStep() ;
@@ -139,52 +126,29 @@ void HydrogenBehaviorModel :: getInput(double time, vector<double> pos_temp, vec
   _time = time;
   _dt   = dt ;
 
-  if(_nbNodes>0) // Compute the temperature profile at each time
-    spatialeInterpolation(pos_temp, temp_inp, _positionsVector, _temperatureVector);
+  spatialeInterpolation(pos_temp, temp_inp, _positionsVector, _temperatureVector);
 }
 
 // We assume the system is at equilibrium when the simulation starts
 void HydrogenBehaviorModel :: computeInitEq()
 {
-  if(_nbNodes>0)
-  {
-    for(int k=0; k<_nbNodes; k++)
-      computePhysicalParameters(k);
-  }
-  else
-    computePhysicalParameters();
+  for(int k=0; k<_nbNodes; k++)
+    computePhysicalParameters(k);
 
   if(_optionNGD==0)
     return;
 
-
-  if(_nbNodes>0)
-  {
-    for(int k=0; k<_nbNodes; k++)
-    {
-      if(_optionNGD<3)
-      {
-          _solutionContentVector[k] = std::min(_totalContentVector[k], _tsspVector[k]);
-          _hydridesContentVector[k] = _totalContentVector[k] - _solutionContentVector[k];
-      }
-      else
-      {
-          _solutionContentVector[k] = std::min(_totalContentVector[k], _tssdVector[k]);
-          _hydridesContentVector[k] = _totalContentVector[k] - _solutionContentVector[k];
-      }
-    }
-  }
-  else
+  for(int k=0; k<_nbNodes; k++)
   {
     if(_optionNGD<3)
     {
-        _solutionContent = std::min(_totalContent, _tssp);
-        _hydridesContent = _totalContent - _solutionContent ;
+        _solutionContentVector[k] = std::min(_totalContentVector[k], _tsspVector[k]);
+        _hydridesContentVector[k] = _totalContentVector[k] - _solutionContentVector[k];
     }
     else
     {
-        _solutionContent = std::min(_totalContent, _tssd);
-        _hydridesContent = _totalContent - _solutionContent ;
+        _solutionContentVector[k] = std::min(_totalContentVector[k], _tssdVector[k]);
+        _hydridesContentVector[k] = _totalContentVector[k] - _solutionContentVector[k];
     }
   }
 }
@@ -192,286 +156,82 @@ void HydrogenBehaviorModel :: computeInitEq()
 // Overriding of the computeProperties method
 void HydrogenBehaviorModel :: computeProperties()
 {
-  if(_nbNodes>0)
-  {
-    // Physical Parameters update (solubilities, kinetics, diffusion coefficient)
+  
+// Physical Parameters update (solubilities, kinetics, diffusion coefficient)
+    for(int k=0; k<_nbNodes; k++)
+        computePhysicalParameters(k) ;
+
+// Time step update
+    if(_dt<0)
+      _dt = computeTimeStep() ;
+
+// Solid solution distribution computation
+    if(_fickLaw || _soretEffect)
+    {
+        // Hydrogen Flux
         for(int k=0; k<_nbNodes; k++)
-            computePhysicalParameters(k) ;
+              computeDiffusionFlux(k);
 
-    // Time step update
-        if(_dt<0)
-          _dt = computeTimeStep() ;
+        // Diffusion
+        std::vector<double> newSolutionContent(_nbNodes,0.);
+        newSolutionContent[0] = _solutionContentVector[0] - _dt*(_flux[0])/(_positionsVector[1]-_positionsVector[0]) ;
+        for(int k=1; k<_nbNodes; k++)
+          newSolutionContent[k] = _solutionContentVector[k] - _dt*(_flux[k] - _flux[k-1])/(_positionsVector[k]-_positionsVector[k-1]);
 
-    // Solid solution distribution computation
-        if(_fickLaw || _soretEffect)
+        // Update of solid solution and total content
+        for(int k=0; k<_nbNodes; k++)
         {
-            // Hydrogen Flux
-            for(int k=0; k<_nbNodes; k++)
-                  computeDiffusionFlux(k);
-
-            // Diffusion
-            std::vector<double> newSolutionContent(_nbNodes,0.);
-            newSolutionContent[0] = _solutionContentVector[0] - _dt*(_flux[0])/(_positionsVector[1]-_positionsVector[0]) ;
-            for(int k=1; k<_nbNodes; k++)
-              newSolutionContent[k] = _solutionContentVector[k] - _dt*(_flux[k] - _flux[k-1])/(_positionsVector[k]-_positionsVector[k-1]);
-
-            // Update of solid solution and total content
-            for(int k=0; k<_nbNodes; k++)
-            {
-              _solutionContentVector[k] = newSolutionContent[k];
-              _totalContentVector[k] = _solutionContentVector[k] + _hydridesContentVector[k];
-            }
-
+          _solutionContentVector[k] = newSolutionContent[k];
+          _totalContentVector[k] = _solutionContentVector[k] + _hydridesContentVector[k];
         }
 
-    // Nucleation/Growth/Dissolution
-        if(_optionNGD>0)
+    }
+
+// Nucleation/Growth/Dissolution
+    if(_optionNGD>0)
+    {
+      for(int k=0; k<_nbNodes; k++)
+      {
+        double delta_solutionContent(0.) ;
+
+        if(_kinetics==1) // Equilibrium calculation
         {
-          for(int k=0; k<_nbNodes; k++)
-          {
-            double delta_solutionContent(0.) ;
+          //Nucleation if Css above TSSp
+          if ((_optionNGD>0) && (_solutionContentVector[k] > _tsspVector[k]))
+              delta_solutionContent = computeNucleationEq(k) ;
 
-            if(_kinetics==1) // Equilibrium calculation
-            {
-              //Nucleation if Css above TSSp
-              if ((_optionNGD>0) && (_solutionContentVector[k] > _tsspVector[k]))
-                  delta_solutionContent = computeNucleationEq(k) ;
+          //Dissolution if hydrides under TSSd
+          if ((_optionNGD>1) && (_solutionContentVector[k] < _tssdVector[k] && _hydridesContentVector[k]>0.))
+              delta_solutionContent = computeDissolutionEq(k) ;
 
-              //Dissolution if hydrides under TSSd
-              if ((_optionNGD>1) && (_solutionContentVector[k] < _tssdVector[k] && _hydridesContentVector[k]>0.))
-                  delta_solutionContent = computeDissolutionEq(k) ;
+          // Precipitation if Css above TSSp  OR  if hydrides>0 with Css above TSSd
+          if ((_optionNGD>2) && (_solutionContentVector[k] > _tsspVector[k] || (_solutionContentVector[k]>_tssdVector[k] && _hydridesContentVector[k]>0.)))
+              delta_solutionContent = computePrecipitationEq(k) ;
 
-              // Precipitation if Css above TSSp  OR  if hydrides>0 with Css above TSSd
-              if ((_optionNGD>2) && (_solutionContentVector[k] > _tsspVector[k] || (_solutionContentVector[k]>_tssdVector[k] && _hydridesContentVector[k]>0.)))
-                  delta_solutionContent = computePrecipitationEq(k) ;
-
-              _solutionContentVector[k] += delta_solutionContent ;
-              _hydridesContentVector[k] -= delta_solutionContent ;
-            }
-
-            else
-            {
-                // Nucleation over TSSp
-                if ((_optionNGD>0) && (_solutionContentVector[k] >= _tsspVector[k]))
-                  delta_solutionContent += computeNucleationRate(k) ;
-
-                // Dissolution if hydrides under TSSd
-                if ((_optionNGD>1) && (_solutionContentVector[k] < _tssdVector[k] && _hydridesContentVector[k]>0.))
-                  delta_solutionContent = computeDissolutionRate(k) ;
-
-                // Growth if hydrides above TSSd
-                if ((_optionNGD>2) && (_solutionContentVector[k] > _tssdVector[k] && (_hydridesContentVector[k]>0. || delta_solutionContent<0)))
-                  delta_solutionContent += computeGrowthRate(delta_solutionContent,k) ;
-
-                _solutionContentVector[k] += delta_solutionContent*_dt ;
-                _hydridesContentVector[k] -= delta_solutionContent*_dt ;
-            }
-          }
-        }
-  }
-  else
-  {
-      computePhysicalParameters() ;
-
-      double delta_solutionContent(0.) ;
-
-      if(_kinetics==1)
-      {
-        //Nucleation is always computed
-        if ((_optionNGD>0) && (_solutionContent > _tssp))
-            delta_solutionContent = computeNucleationEq() ;
-
-        //Dissolution if hydrides under TSSd
-        if ((_optionNGD>1) && (_solutionContent < _tssd && _hydridesContent>0.))
-            delta_solutionContent = computeDissolutionEq() ;
-
-        // Precipitation if Css above TSSp  OR  if hydrides above TSSd
-        if ((_optionNGD>2) && (_solutionContent > _tssp || (_solutionContent>_tssd && _hydridesContent>0.)))
-            delta_solutionContent = computePrecipitationEq() ;
-
-        _hydridesContent -= delta_solutionContent ;
-        _solutionContent += delta_solutionContent ;
-      }
-
-      else
-      {
-          // Nucleation if Css over TSSp
-          if ((_optionNGD>0) && (_solutionContent >= _tssp))
-              delta_solutionContent += computeNucleationRate() ;
-
-          // Dissolution if hydrides under TSSd
-          if ((_optionNGD>1) && (_solutionContent < _tssd && _hydridesContent>0.))
-              delta_solutionContent = computeDissolutionRate() ;
-
-          // Growth if hydrides above TSSd
-          if ((_optionNGD>2) && (_solutionContent > _tssd && (_hydridesContent>0. || delta_solutionContent<0.)))
-              delta_solutionContent += computeGrowthRate(delta_solutionContent) ;
-
-          _solutionContent += delta_solutionContent*_dt ;
-          _hydridesContent -= delta_solutionContent*_dt ;
-      }
-
-      _totalContent = _solutionContent + _hydridesContent;
-  }
-} //end computeProperties
-
-
-// ------------------------------------------   Point computation   ------------------------------------------
-    // NGD equilibrium
-double HydrogenBehaviorModel :: computeNucleationEq()
-{
-  return -(_solutionContent - _tssp) ;
-}
-double HydrogenBehaviorModel :: computePrecipitationEq()
-{
-  return -(_solutionContent - _tssd) ;
-}
-double HydrogenBehaviorModel :: computeDissolutionEq()
-{
-  return -(std::max(_solutionContent - _tssd, _solutionContent - _totalContent)) ;
-}
-    // NGD kinetics
-double HydrogenBehaviorModel :: computeNucleationRate()
-{
-  if(1./_Kn < _dt)
-    std::cout << "Warning : time step too big for the Nucleation: 1/Kn=" << 1./_Kn << " s\n" ;
-  //max to not precipitate more than equilibrium
-  return std::max(-_Kn*(_solutionContent - _tssp), -(1./_dt)*(_solutionContent - _tssp));
-}
-double HydrogenBehaviorModel :: computeGrowthRate(double delta_solutionContent)
-{
-  if(1./_Kg < _dt)
-    std::cout << "Warning : time step too big for Growth: 1/Kg=" << 1./_Kg << " s\n" ;
-  // Reaction advancement
-  double x = (_hydridesContent-delta_solutionContent)/(_totalContent-_tssd) ;
-  if(x>=1.)
-    return 0. ;
-  else
-  {
-    double delta = (_totalContent - _tssd)*_p*(1-x)*pow(-log(1-x),1-1./_p) ;
-    return std::max(-_Kg*delta, -(1./_dt)*delta) ;
-  }
-}
-double HydrogenBehaviorModel :: computeDissolutionRate()
-{
-  if(1./_Kd<_dt)
-    std::cout << "Warning : time step too big for Dissolution: 1/Kd=" << 1./_Kd << " s\n" ;
-  //min to not dissolve more than equilibrium
-  double delta = std::max(_solutionContent - _tssd, _solutionContent - _totalContent);
-  return std::min(-_Kd*delta, -(1./_dt)*delta) ;
-}
-    // Physical parameters
-void HydrogenBehaviorModel :: computePhysicalParameters()
-{
-  // Solubilities
-  switch(_solubilities)
-  {
-    case 0: // Linear dependence
-      _tssp = std::max(0.,_Qtssp*_temperature - _tssp0);
-      _tssd = std::max(0.,_Qtssd*_temperature - _tssd0);
-      break ;
-
-    case 1: // Exponential dependence
-      _tssp = _tssp0*exp(-_Qtssp/(R*_temperature));
-      _tssd = _tssd0*exp(-_Qtssd/(R*_temperature));
-      break ;
-  }
-
-  //Kinetics
-  switch(_kinetics)
-  {
-    case 1: /* Nothing to do */
-      break ;
-
-    case 2: // Constant kinetics
-      _Kd = _Kd0  ;
-      _Kn = _Kn0  ;
-      _Kg = _Kmob0;
-    break ;
-
-    case 3: // Exponential dependence
-    // Formation energy
-      double Eth= -_Eth0 + _Eth1*_temperature - _Eth2*pow(_temperature,2) + _Eth3*pow(_temperature,3);
-
-    // Nucleation kinetics
-      if ((_optionNGD>0) && (_solutionContent >= _tssp))
-      {
-        double incubation_factor ;
-
-        // Incubation not taken into account
-        if(_tau == 0)
-          incubation_factor = 1 ;
-
-        // Incubation accounted for but not started
-        else if(!_incubation)
-        {
-          _incubation = true ;
-          _t0 = _time ;
-          incubation_factor = 0 ;
+          _solutionContentVector[k] += delta_solutionContent ;
+          _hydridesContentVector[k] -= delta_solutionContent ;
         }
 
-        // Incubation is started
         else
-          incubation_factor = exp(-_tau / (_time - _t0)) ;
+        {
+            // Nucleation over TSSp
+            if ((_optionNGD>0) && (_solutionContentVector[k] >= _tsspVector[k]))
+              delta_solutionContent += computeNucleationRate(k) ;
 
-        cout << incubation_factor << endl ;
-        double Kn0 = _Kn0 * factor_f_alpha() * incubation_factor ;
-        _Kn = std::min(1., ((17000-_hydridesContent)/17000)*Kn0*exp(-Eth/(kb*_temperature)));
+            // Dissolution if hydrides under TSSd
+            if ((_optionNGD>1) && (_solutionContentVector[k] < _tssdVector[k] && _hydridesContentVector[k]>0.))
+              delta_solutionContent = computeDissolutionRate(k) ;
 
+            // Growth if hydrides above TSSd
+            if ((_optionNGD>2) && (_solutionContentVector[k] > _tssdVector[k] && (_hydridesContentVector[k]>0. || delta_solutionContent<0)))
+              delta_solutionContent += computeGrowthRate(delta_solutionContent,k) ;
+
+            _solutionContentVector[k] += delta_solutionContent*_dt ;
+            _hydridesContentVector[k] -= delta_solutionContent*_dt ;
+        }
       }
-      else
-      {
-        _Kn = 0. ;
-        _incubation = false ;
-      }
-
-    // Dissolution kinetics
-      if ((_optionNGD>1) && (_solutionContent < _tssd && _hydridesContent>0.))
-        _Kd = _Kd0*exp(-_Ediss/(kb*_temperature));
-      else
-        _Kd = 0. ;
-
-    // Growth Kinetics : 'average' of diffusion controlled and reaction controlled kinetics
-      if ((_optionNGD>2) && (_solutionContent > _tssd && _hydridesContent>0.))
-      {
-        double Kmob = _Kmob0*leverRule()*factor_f_alpha()*exp(-_Eg/(kb*_temperature));
-        double Kth  = _Kth0*leverRule()*factor_f_alpha()*exp(-Eth/(kb*_temperature));
-        _Kg = 1./(1./Kmob + 1./Kth) ;
-      }
-      else
-        _Kg = 0. ;
-
-    break;
-  }
-}
-double HydrogenBehaviorModel :: leverRule()
-{
-  // Total atomic fraction of hydrogen
-  double xtot   = _totalContent / (Mh*(_totalContent/Mh  +  (1e6 - _totalContent)/Mzr)) ;
-  // TSSd atomic fraction
-  double xalpha =     _tssd     / (Mh*(    _tssd/Mh      +  (1e6 -     _tssd    )/Mzr)) ;
-  // alpha / delta boundaries
-  double xdelta = -9.93e-11*pow(_temperature,3) + // 3rd degree polynome fitting
-                  8.48e-8*pow(_temperature,2) -
-                  5.73e-5*_temperature + 0.623 ;
-
-  // return the value of the lever rule
-  return (xtot - xalpha)/(xdelta - xalpha) ;
-}
-double HydrogenBehaviorModel :: factor_f_alpha()
-{
-  // Hydride atomic fraction
-  double xhyd   = _hydridesContent/ (Mh*(_hydridesContent/Mh +(1e6 - _hydridesContent)/Mzr)) ;
-  // TSSd atomic fraction
-  double xalpha =     _tssd     / (Mh*(    _tssd/Mh      +  (1e6 -     _tssd    )/Mzr)) ;
-  // alpha / alpha+delta boundaries
-  double xdelta = -9.93e-11*pow(_temperature,3) + // 3rd degree polynome fitting
-                  8.48e-8*pow(_temperature,2) -
-                  5.73e-5*_temperature + 0.623 ;
-
-  // return the value of the lever rule
-  return 1. - xhyd/(xdelta - xalpha) ;
-}
+    }
+} //end computeProperties
 
 
 // ------------------------------------------ Space computation   ------------------------------------------
@@ -498,21 +258,14 @@ void HydrogenBehaviorModel :: computeDiffusionFlux(int position)
   }
 
   _flux[position] = fluxFick+fluxSoret ;
+}
 
-}
     // NGD equilibrium
-double HydrogenBehaviorModel :: computeNucleationEq(int position)
-{
-  return -(_solutionContentVector[position] - _tsspVector[position]) ;
-}
-double HydrogenBehaviorModel :: computePrecipitationEq(int position)
-{
-  return -(_solutionContentVector[position] - _tssdVector[position]) ;
-}
-double HydrogenBehaviorModel :: computeDissolutionEq(int position)
-{
-  return -(std::max(_solutionContentVector[position] - _tssdVector[position], _solutionContentVector[position] - _totalContentVector[position])) ;
-}
+double HydrogenBehaviorModel :: computeNucleationEq   (int position) { return -(_solutionContentVector[position] - _tsspVector[position]) ;}
+double HydrogenBehaviorModel :: computePrecipitationEq(int position) { return -(_solutionContentVector[position] - _tssdVector[position]) ;}
+double HydrogenBehaviorModel :: computeDissolutionEq  (int position) { return -(std::max(_solutionContentVector[position] - _tssdVector[position],
+                                                                                         _solutionContentVector[position] - _totalContentVector[position])) ;}
+
     // NGD kinetics
 double HydrogenBehaviorModel :: computeNucleationRate(int position)
 {
@@ -523,6 +276,7 @@ double HydrogenBehaviorModel :: computeNucleationRate(int position)
   //max to not precipitate more than equilibrium
   return std::max(-_KnVector[position]*(_solutionContentVector[position] - _tsspVector[position]), -(1./_dt)*(_solutionContentVector[position] - _tsspVector[position]) );
 }
+
 double HydrogenBehaviorModel :: computeGrowthRate(double delta_solutionContent,int position)
 {
   // if the timestep is too large it is re computed
@@ -539,6 +293,7 @@ double HydrogenBehaviorModel :: computeGrowthRate(double delta_solutionContent,i
     return std::max(-_KgVector[position]*delta, -(1./_dt)*delta) ;
   }
 }
+
 double HydrogenBehaviorModel :: computeDissolutionRate(int position)
 {
   // if the timestep is too large it is re computed
@@ -549,6 +304,7 @@ double HydrogenBehaviorModel :: computeDissolutionRate(int position)
   double delta = std::max(_solutionContentVector[position] - _tssdVector[position], _solutionContentVector[position] - _totalContentVector[position] );
   return std::min(-_KdVector[position]*delta, -(1./_dt)*delta) ;
 }
+
     // Physical parameters
 void HydrogenBehaviorModel :: computePhysicalParameters(int position)
 {
@@ -655,6 +411,7 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
     }
   }
 }
+
 double HydrogenBehaviorModel :: leverRule(int position)
 {
   // Total atomic fraction of hydrogen
@@ -670,6 +427,7 @@ double HydrogenBehaviorModel :: leverRule(int position)
   // return the value of the lever rule
   return ((xtot - xalpha)/(xdelta - xalpha));
 }
+
 double HydrogenBehaviorModel :: factor_f_alpha(int position)
 {
   double xhyd   = _hydridesContentVector[position]/ (Mh*(_hydridesContentVector[position]/Mh +(1e6 - _hydridesContentVector[position])/Mzr)) ;
@@ -705,6 +463,7 @@ void HydrogenBehaviorModel :: computeLocations(double x0, double xEnd, double bi
     x[k] = x[k-1] + bias*(x[k-1] - x[k-2]) ;
   x[n-1] = xEnd  ;
 }
+
     // Interpolation
 void HydrogenBehaviorModel :: spatialeInterpolation(std::vector<double>& refX, std::vector<double>& refY, std::vector<double>& vectorX, std::vector<double>& vectorY)
 {
@@ -715,6 +474,7 @@ void HydrogenBehaviorModel :: spatialeInterpolation(std::vector<double>& refX, s
     vectorY[i] = refY[k-1] + (refY[k] - refY[k-1]) * (vectorX[i] - refX[k-1]) / (refX[k] - refX[k-1]);
   }
 }
+
     // Time step
 double HydrogenBehaviorModel :: computeTimeStep()
 {
@@ -792,116 +552,49 @@ double HydrogenBehaviorModel :: computeTimeStep()
 
 // ------------------------------------------   Getters   ------------------------------------------
     // Spacial profile
-std::vector<double>& HydrogenBehaviorModel :: returnKdVector(){
-  return _KdVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnKgVector(){
-  return _KgVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnKmobVector(){
-  return _KmobVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnKthVector(){
-  return _KthVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnfVector(){
-  return _f_alpha ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnLeverVector(){
-  return _lever ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnKnVector(){
-  return _KnVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnTSSpVector(){
-  return _tsspVector;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnTSSdVector(){
-  return _tssdVector;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnTotalContentVector(){
-  return _totalContentVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnSolutionContentVector(){
-  return _solutionContentVector ;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnHydridesContentVector(){
-  return _hydridesContentVector;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnPositionVector(){
-  return _positionsVector;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnTemperatureVector(){
-  return _temperatureVector;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnCoeffFickVector(){
-  return _coeffFickVector;
-}
-std::vector<double>& HydrogenBehaviorModel :: returnFlux(){
-  return _flux ;
-}
+std::vector<double>& HydrogenBehaviorModel :: returnKdVector()              {return _KdVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnKgVector()              {return _KgVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnKmobVector()            {return _KmobVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnKthVector()             {return _KthVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnfVector()               {return _f_alpha ;}
+std::vector<double>& HydrogenBehaviorModel :: returnLeverVector()           {return _lever ;}
+std::vector<double>& HydrogenBehaviorModel :: returnKnVector()              {return _KnVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnTSSpVector()            {return _tsspVector;}
+std::vector<double>& HydrogenBehaviorModel :: returnTSSdVector()            {return _tssdVector;}
+std::vector<double>& HydrogenBehaviorModel :: returnTotalContentVector()    {return _totalContentVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnSolutionContentVector() {return _solutionContentVector ;}
+std::vector<double>& HydrogenBehaviorModel :: returnHydridesContentVector() {return _hydridesContentVector;}
+std::vector<double>& HydrogenBehaviorModel :: returnPositionVector()        {return _positionsVector;}
+std::vector<double>& HydrogenBehaviorModel :: returnTemperatureVector()     {return _temperatureVector;}
+std::vector<double>& HydrogenBehaviorModel :: returnCoeffFickVector()       {return _coeffFickVector;}
+std::vector<double>& HydrogenBehaviorModel :: returnFlux()                  {return _flux ;}
 
-    // Point value (or average)
-double HydrogenBehaviorModel :: returnKd(){
-  return _Kd ;
+double HydrogenBehaviorModel :: returnTimeStep() {return _dt ;}
+
+double HydrogenBehaviorModel :: returnTotalContent()
+{
+  double sum(0.);
+  for(int k=0; k<_nbNodes-2; k++)
+    sum += (_totalContentVector[k] + 4*_totalContentVector[k+1] + _totalContentVector[k+2])*0.5*(_positionsVector[k+2]-_positionsVector[k])/3;
+  return sum ;
 }
-double HydrogenBehaviorModel :: returnKg(){
-  return _Kg ;
+double HydrogenBehaviorModel :: returnSolutionContent()
+{
+  double sum(0.);
+  for(int k=0; k<_nbNodes-1; k++)
+    sum += 0.5*(_solutionContentVector[k]+_solutionContentVector[k+1])*(_positionsVector[k+1]-_positionsVector[k]);
+  return sum/_sampleLenght ;
 }
-double HydrogenBehaviorModel :: returnKn(){
-  return _Kn ;
+double HydrogenBehaviorModel :: returnHydridesContent()
+{
+  double sum(0.);
+  for(int k=0; k<_nbNodes-1; k++)
+    sum += 0.5*(_hydridesContentVector[k]+_hydridesContentVector[k+1])*(_positionsVector[k+1]-_positionsVector[k]);
+  return sum/_sampleLenght ;
 }
-double HydrogenBehaviorModel :: returnTSSP(){
-  return _tssp;
-}
-double HydrogenBehaviorModel :: returnTSSD(){
-  return _tssd;
-}
-double HydrogenBehaviorModel :: returnTotalContent(){
-  if(_nbNodes>0)
-  {
-    double sum(0.);
-    for(int k=0; k<_nbNodes-2; k++)
-      sum += (_totalContentVector[k] + 4*_totalContentVector[k+1] + _totalContentVector[k+2])*0.5*(_positionsVector[k+2]-_positionsVector[k])/3;
-    return sum ;
-  }
-  else
-    return _totalContent ;
-}
-double HydrogenBehaviorModel :: returnSolutionContent(){
-  if(_nbNodes>0)
-  {
-    double sum(0.);
-    for(int k=0; k<_nbNodes-1; k++)
-      sum += 0.5*(_solutionContentVector[k]+_solutionContentVector[k+1])*(_positionsVector[k+1]-_positionsVector[k]);
-    return sum/_sampleLenght ;
-  }
-  else
-    return _solutionContent ;
-}
-double HydrogenBehaviorModel :: returnHydridesContent(){
-  if(_nbNodes>0)
-  {
-    double sum(0.);
-    for(int k=0; k<_nbNodes-1; k++)
-      sum += 0.5*(_hydridesContentVector[k]+_hydridesContentVector[k+1])*(_positionsVector[k+1]-_positionsVector[k]);
-    return sum/_sampleLenght ;
-  }
-  else
-    return _hydridesContent;
-}
-double HydrogenBehaviorModel :: returnTemperature(){
-  return _temperature;
-}
-double HydrogenBehaviorModel :: returnTimeStep(){
-  return _dt ;
-}
-double HydrogenBehaviorModel :: returnAdvancement(){
-  // No temperature gradient for TTt diagram
-  if(_nbNodes>0)
-    return (_totalContentVector[0]-_solutionContentVector[0])/(_totalContentVector[0]-_tssdVector[0]);
-  else
-    return (_totalContent - _solutionContent)/(_totalContent - _tssd);
+double HydrogenBehaviorModel :: returnAdvancement()
+{
+  return (_totalContentVector[0]-_solutionContentVector[0])/(_totalContentVector[0]-_tssdVector[0]);
 }
 
 void HydrogenBehaviorModel::print(){ //Auxiliary method to find what's wrong

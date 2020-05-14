@@ -27,9 +27,6 @@ class HydrogenBehaviorModel
     void computeLocations         (double x0, double xEnd, double bias, std::vector<double>& x);
 
     double returnAdvancement      ();
-
-    double returnTSSP             ();
-    double returnTSSD             ();
     double returnTotalContent     ();
     double returnSolutionContent  ();
     double returnHydridesContent  ();
@@ -37,7 +34,6 @@ class HydrogenBehaviorModel
     double returnKg               ();
     double returnKn               ();
     double returnPosition         ();
-    double returnTemperature      ();
     double returnTimeStep         ();
 
     std::vector<double>& returnTSSpVector             ();
