@@ -73,7 +73,7 @@ vector<vector<double>> InOut::getThermalTreatment(string path_exec, string file_
     
     vector<double> pos_temp(0) ;
     vector<double> time_temp(0) ;
-    vector<vector<double>> temp_inp ;
+    vector<vector<double>> temp_inp(0) ;
     
     // Positions
     string line_pos ;
@@ -111,15 +111,16 @@ vector<vector<double>> InOut::getThermalTreatment(string path_exec, string file_
     } while(!(inptemp.eof()));
 
     temp_inp.pop_back() ;
+    time_temp.pop_back();
 
-    for(int k=0; i<temp_inp.size(); k++)
-    {
-    chkinp << time_temp[k] ;
-    for(int j=0; j<temp_inp[0].size(); j++)
-      cout<< "\t" << temp_inp[k][j] ;
-
-    chkinp << endl ;
-    }
+//    for(int k=0; k<temp_inp.size(); k++)
+//    {
+//    chkinp << time_temp[k] ;
+//    for(int j=0; j<temp_inp[0].size(); j++)
+//      cout<< "\t" << temp_inp[k][j] ;
+//
+//    chkinp << endl ;
+//    }
 
     cout << "Number of specified temperature steps = " << i-1 << endl;
 
@@ -316,7 +317,7 @@ void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec
     std::vector<double> listVector[nbOutput];
     listVector[0] = hydrogen_behavior.returnTotalContentVector();
     listVector[1] = hydrogen_behavior.returnSolutionContentVector();
-    //    listVector[2] = hydrogen_behavior.returnHydridesContentVector();
+    listVector[2] = hydrogen_behavior.returnTemperatureVector();
     //    listVector[3] = hydrogen_behavior.returnTemperatureVector();
     //    listVector[4] = hydrogen_behavior.returnTSSpVector();
     //    listVector[5] = hydrogen_behavior.returnTSSdVector();
@@ -380,7 +381,7 @@ void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string
         /* HERE */
         listOutputNames[0] = "Ctot," ;
         listOutputNames[1] = "Css,"  ;
-//        listOutputNames[2] = "Chyd," ;
+        listOutputNames[2] = "T," ;
 //        listOutputNames[3] = "T,"    ;
 //        listOutputNames[4] = "TSSp," ;
 //        listOutputNames[5] = "TSSd," ;

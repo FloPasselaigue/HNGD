@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
   hydrogen_behavior.getInitialConditions(settings, physicalParameters, pos_hyd, hyd_inp, pos_temp, temp);
 
   // Output file
-  const short int nbOutput = 2 ; /* HERE */
+  const short int nbOutput = 3 ; /* HERE */
   int listPosPrint[nbPosPrint] ;
   if(typeSimu==1) // For a distribution simulation
   {
@@ -123,14 +123,14 @@ int main(int argc, char* argv[])
   {
     do
     {
-    // Computation
-      hydrogen_behavior.getInput(t, pos_temp, temp, dt);
-      hydrogen_behavior.computeProperties();
-
     // Interpolation of input data using the function "interpolate" implemented below
       t += hydrogen_behavior.returnTimeStep() ;
       printCountdown += hydrogen_behavior.returnTimeStep() ;
       temp = interpolate(t, time_temp, temp_inp);
+
+    // Computation
+      hydrogen_behavior.getInput(t, pos_temp, temp, dt);
+      hydrogen_behavior.computeProperties();
 
     // Write output
       if (printCountdown >= dtPrint)
@@ -156,21 +156,25 @@ int main(int argc, char* argv[])
 
 vector<double> interpolate(double t, vector<double> time_stamps, vector<vector<double>> temp_stamps)
 {
-  unsigned long k=1 ;
-  while(true){
-    if(t>=time_stamps[k-1] && t<=time_stamps[k])
-      break ;
-    k++ ;
+  
+  // If end of simulation, no interpolation
+  if(t >= time_stamps[time_stamps.size()-1])
+    return temp_stamps[temp_stamps.size()-1] ;
+  
+  else
+  {
+    int k=0 ;
+    while(t >= time_stamps[k])
+      k ++ ;
+
+    vector<double> interpolated_temp_stamps(temp_stamps[0].size()) ;
+    
+    for(int i=0; i<temp_stamps[0].size(); i++)
+      interpolated_temp_stamps[i] = temp_stamps[k-1][i] + (temp_stamps[k][i] - temp_stamps[k-1][i]) * (t - time_stamps[k-1]) / (time_stamps[k] - time_stamps[k-1]) ;
+
+    return interpolated_temp_stamps ;
   }
-
-  if(k >= time_stamps.size())
-    k = time_stamps.size()-2 ;
-
-  vector<double> temp(time_stamps.size()) ;
-  for(int i=0; i<temp_stamps[0].size(); i++)
-    temp[i] = temp_stamps[k-1][i] + (temp_stamps[k][i]-temp_stamps[k-1][i]) * (t - time_stamps[k-1]) / (time_stamps[k]-time_stamps[k-1]) ;
-
-  return temp;
+  
 }
 
 
