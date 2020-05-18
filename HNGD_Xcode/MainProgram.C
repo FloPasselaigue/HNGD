@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
   hydrogen_behavior.getInitialConditions(settings, physicalParameters, pos_hyd, hyd_inp, pos_temp, temp);
 
   // Output file
-  const short int nbOutput = 3 ; /* HERE */
+  const short int nbOutput = 4 ; /* HERE */
   int listPosPrint[nbPosPrint] ;
   if(typeSimu==1) // For a distribution simulation
   {
