@@ -355,11 +355,11 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
       // Nucleation kinetics
       if (_optionNGD>0)
       {
-        double sigma = .23 * _tsspVector[position] ;
-        double delta = .30 * _tsspVector[position] ;
-        _probaVector[position] = 0.5 * erfc((delta + _tsspVector[position] - _solutionContentVector[position]) / (1.4142 * sigma)) ;
+//        double sigma = .23 * _tsspVector[position] ;
+//        double delta = .30 * _tsspVector[position] ;
+//        _probaVector[position] = 0.5 * erfc((delta + _tsspVector[position] - _solutionContentVector[position]) / (1.4142 * sigma)) ;
         
-        double Kn0 = _Kn0 * factor_f_alpha(position) * _probaVector[position] ;
+        double Kn0 = _Kn0 * factor_f_alpha(position);// * _probaVector[position] ;
         _KnVector[position] = ((17000-_hydridesContentVector[position])/17000) * Kn0 * exp(-Eth/(kb*_temperatureVector[position])) ;
 
       }
@@ -370,7 +370,8 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
 
       // Dissolution kinetics
       if ((_optionNGD>1) && (_solutionContentVector[position] < _tssdVector[position] && _hydridesContentVector[position]>0.))
-        _KdVector[position] = _Kd0 * exp(-_Ediss/(kb*_temperatureVector[position])) ;
+        _KdVector[position] = _Kd0 * exp(-_Ediss/(kb*_temperatureVector[position]))
+        * pow(_hydridesContentVector[position]/_totalContentVector[position], 2);
       else
         _KdVector[position] = 0. ;
 
