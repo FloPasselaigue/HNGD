@@ -270,10 +270,13 @@ void HydrogenBehaviorModel :: computeDiffusionFlux(int position)
 }
 
     // NGD equilibrium
-double HydrogenBehaviorModel :: computeNucleationEq   (int position) { return -(_solutionContentVector[position] - _tsspVector[position]) ;}
-double HydrogenBehaviorModel :: computePrecipitationEq(int position) { return -(_solutionContentVector[position] - _tssdVector[position]) ;}
-double HydrogenBehaviorModel :: computeDissolutionEq  (int position) { return -(std::max(_solutionContentVector[position] - _tssdVector[position],
-                                                                                         _solutionContentVector[position] - _totalContentVector[position])) ;}
+double HydrogenBehaviorModel :: computeNucleationEq   (int position) {
+  return -(_solutionContentVector[position] - _tsspVector[position]) ;}
+double HydrogenBehaviorModel :: computePrecipitationEq(int position) {
+  return -(_solutionContentVector[position] - _tssdVector[position]) ;}
+double HydrogenBehaviorModel :: computeDissolutionEq  (int position) {
+  return -(std::max(_solutionContentVector[position] - _tssdVector[position],
+                    _solutionContentVector[position] - _totalContentVector[position])) ;}
 
     // NGD kinetics
 double HydrogenBehaviorModel :: computeNucleationRate(int position)
@@ -353,7 +356,7 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
                    +_Eth3*pow(_temperatureVector[position],3);
 
       // Nucleation kinetics
-      if (_optionNGD>0)
+      if (_optionNGD>0) // && (_solutionContentVector[position] >= _tsspVector[position]))
       {
 //        double sigma = .23 * _tsspVector[position] ;
 //        double delta = .30 * _tsspVector[position] ;

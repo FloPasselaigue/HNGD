@@ -21,9 +21,9 @@ class InOut
         
         static void writePhysicsInCheck(double * physicalParameters);
 
-        static void writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint);
+        static void writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint);
             
-        static void writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint) ;
+        static void writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint) ;
 };
 
 #endif /* InOut_hpp */

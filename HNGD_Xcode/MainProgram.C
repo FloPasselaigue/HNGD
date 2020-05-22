@@ -29,6 +29,8 @@ int main(int argc, char* argv[])
   //----------------------- Define execution folder and file names --------------------
   string path_exec = "/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/" ;
   
+  string input_folder = "input_files/" ;
+  
   // Default file names
   string settings_name = "1_settings.txt" ;
   string treatment_name= "2_temperature.txt" ;
@@ -37,22 +39,20 @@ int main(int argc, char* argv[])
   string output_name   = "output" ;
   
   // Names can be given as parameters
-  if(argc > 0)
+  if(argc > 1)
   {
-    for(int k=1; k<argc; k+=2)
-    {
-      if      (argv[k][0] == 's') {string name(argv[k+1]); settings_name  = name + ".txt" ;}
-      else if (argv[k][0] == 't') {string name(argv[k+1]); treatment_name = name + ".txt" ;}
-      else if (argv[k][0] == 'p') {string name(argv[k+1]); physics_name   = name + ".txt" ;}
-      else if (argv[k][0] == 'h') {string name(argv[k+1]); hydroIC_name   = name + ".txt" ;}
-      else if (argv[k][0] == 'o') {string name(argv[k+1]); output_name    = name + ".csv" ;}
-      
-      else    {cout << "Invalid parameter" << endl ; exit(1);}
-    }
+    string name(argv[1]);
+    
+    settings_name  = input_folder + name + "_set.txt" ;
+    treatment_name = input_folder + name + "_temp.txt";
+    physics_name   = input_folder + name + "_phys.txt";
+    hydroIC_name   = input_folder + name + "_hyd.txt" ;
+    output_name    = name + "_out.csv" ;
+    
   }
   
   error.open   (path_exec + output_name + "_error.log", ios::out);
-  output.open  (path_exec + output_name + ".csv",       ios::out);
+  output.open  (path_exec + output_name, ios::out);
   
   if (error.fail() || output.fail())
   {
@@ -109,12 +109,12 @@ int main(int argc, char* argv[])
   hydrogen_behavior.getInitialConditions(settings, physicalParameters, pos_hyd, hyd_inp, pos_temp, temp);
 
   // Output file
-  const short int nbOutput = 4 ; /* HERE */
+  const short int nbOutput = 5 ; /* HERE */
   int listPosPrint[nbPosPrint] ;
   if(typeSimu==1) // For a distribution simulation
   {
-      InOut::writeInitialOutput(hydrogen_behavior, path_exec, nbNodes, nbOutput, nbPosPrint, listPosPrint);
-      InOut::writeOuput(hydrogen_behavior, path_exec, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+      InOut::writeInitialOutput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint);
+      InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
   }
 
   //-------------------- Time loop --------------------------
@@ -135,14 +135,14 @@ int main(int argc, char* argv[])
     // Write output
       if (printCountdown >= dtPrint)
       {
-        InOut::writeOuput(hydrogen_behavior, path_exec, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+        InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
         printCountdown = 0. ;
       }
 
     } while ( t < t_end );
 
     if(printCountdown>0.) // To be sure that the final state is printed
-      InOut::writeOuput(hydrogen_behavior, path_exec, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+      InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
   }
 
   // ------------------- End of computation -----------------------

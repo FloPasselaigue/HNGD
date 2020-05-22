@@ -306,10 +306,10 @@ void InOut::writePhysicsInCheck(double * physicalParameters)
 
 // -------------------------------- Output file writing --------------------------------
 
-void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint)
+void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint)
 {
     ofstream output ;
-    output.open(path_exec + "output.csv", std::ios_base::app);
+    output.open(path_exec + output_name, std::ios_base::app);
 
     hydrogen_behavior.print();
 
@@ -318,8 +318,8 @@ void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec
     listVector[0] = hydrogen_behavior.returnTotalContentVector();
     listVector[1] = hydrogen_behavior.returnSolutionContentVector();
     listVector[2] = hydrogen_behavior.returnTemperatureVector();
-    listVector[3] = hydrogen_behavior.returnProba();
-//    listVector[3] = hydrogen_behavior.returnKgVector();
+    listVector[3] = hydrogen_behavior.returnTSSdVector();
+    listVector[4] = hydrogen_behavior.returnTSSpVector();
 //    listVector[4] = hydrogen_behavior.returnTSSpVector();
 //    listVector[5] = hydrogen_behavior.returnTSSdVector();
 //    listVector[6] = hydrogen_behavior.returnKdVector();
@@ -343,10 +343,10 @@ void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec
     output.close();
 }
 
-void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint)
+void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint)
 {
   ofstream output ;
-  output.open(path_exec + "output.csv", std::ios_base::app);
+  output.open(path_exec + output_name, std::ios_base::app);
 
   if(nbNodes>0)
   {
@@ -383,8 +383,8 @@ void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string
         listOutputNames[0] = "Ctot," ;
         listOutputNames[1] = "Css,"  ;
         listOutputNames[2] = "T," ;
-      listOutputNames[3] = "p," ;
-//        listOutputNames[3] = "Kg,"    ;
+        listOutputNames[3] = "TSSd," ;
+        listOutputNames[4] = "TSSp,"    ;
 //        listOutputNames[4] = "TSSp," ;
 //        listOutputNames[5] = "TSSd," ;
 //        listOutputNames[6] = "Kd," ;

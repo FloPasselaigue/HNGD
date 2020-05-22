@@ -2,7 +2,7 @@
 
 3	NGD option 	     0->nothing ; 1->Nucleation ; 2->Nucl+Dissolution ; 3->NGD
 
-150	Number of cells
+4	Number of cells
 
 3	mode kinetics 	     1-> eq ; 2-> cst: K = K0 ; 3-> exp: K = K0.exp(-E/(kT))
 
@@ -18,6 +18,6 @@
 
 -1	time step (s or -1 for adaptative time step)
 
-648183	printing time step (s) S1: 146880.   S2: 177120
+100	printing time step (s) S1: 146880.   S2: 177120
 
 500	number of places to print
