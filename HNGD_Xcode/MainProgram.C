@@ -7,6 +7,7 @@
 
 #include "InOut.hpp"
 #include "HydrogenBehaviorModel.h"
+#include "EvalEvolution.hpp"
 
 using namespace std;
 
@@ -17,14 +18,20 @@ int main(int argc, char* argv[])
           dtPrint = 0.,             // Duration between 2 prints
           t_end   = 0.;             // Totale duration
 
-  ofstream error,                   // error log file
-           output;                  // output csv file
+  ofstream output;                  // output csv file
 
   // interpolation function for temperature history
   vector<double> interpolate(double t, vector<double> time_stamps, vector<vector<double>> temp_stamps);
   
+  bool changeInterInterval(double t, double dt, vector<double> time_stamps);
+  
   // HNGD object
   HydrogenBehaviorModel hydrogen_behavior;
+  
+  // Evolution evaluation
+  double critPrint ;
+  EvalEvolution evalEvolTemp ; // for temperature
+  EvalEvolution evalEvolHyd ;  // for hydrogen
 
   //----------------------- Define execution folder and file names --------------------
   string path_exec = "/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/" ;
@@ -38,7 +45,7 @@ int main(int argc, char* argv[])
   string hydroIC_name  = "4_hydrogen.txt" ;
   string output_name   = "output" ;
   
-  // Names can be given as parameters
+  // Name can be given as parameters
   if(argc > 1)
   {
     string name(argv[1]);
@@ -51,13 +58,11 @@ int main(int argc, char* argv[])
     
   }
   
-  error.open   (path_exec + output_name + "_error.log", ios::out);
   output.open  (path_exec + output_name, ios::out);
   
-  if (error.fail() || output.fail())
+  if (output.fail())
   {
     cout  << "File opening error!\nProgram stopped.\n";
-    error << "File opening error!\nProgram stopped.\n";
     exit(1);
   }
 
@@ -103,10 +108,18 @@ int main(int argc, char* argv[])
   dt          = settings[9];
   dtPrint     = settings[10];
   nbPosPrint  = min(settings[2],settings[11]);
+  critPrint   = .05 ;
 
   // Physics
   vector<double> temp = interpolate(t, time_temp, temp_inp);
   hydrogen_behavior.getInitialConditions(settings, physicalParameters, pos_hyd, hyd_inp, pos_temp, temp);
+  
+  // Evolution evaluation
+  evalEvolHyd.setProfile(hydrogen_behavior.returnTotalContentVector()) ;
+  evalEvolHyd.setCriterion(critPrint) ;
+  
+  evalEvolTemp.setProfile(hydrogen_behavior.returnTemperatureVector()) ;
+  evalEvolTemp.setCriterion(critPrint) ;
 
   // Output file
   const short int nbOutput = 5 ; /* HERE */
@@ -133,7 +146,10 @@ int main(int argc, char* argv[])
       hydrogen_behavior.computeProperties();
 
     // Write output
-      if (printCountdown >= dtPrint)
+      if (printCountdown >= dtPrint ||
+          evalEvolTemp.evaluate(hydrogen_behavior.returnTemperatureVector()) ||
+          evalEvolHyd.evaluate(hydrogen_behavior.returnTotalContentVector()) ||
+          changeInterInterval(t, hydrogen_behavior.returnTimeStep(), time_temp))
       {
         InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
         printCountdown = 0. ;
@@ -147,7 +163,6 @@ int main(int argc, char* argv[])
 
   // ------------------- End of computation -----------------------
 
-  error << "The calculation was performed!\n";
   cout  << "The calculation was performed!\n";
 
   return 0;
@@ -174,7 +189,19 @@ vector<double> interpolate(double t, vector<double> time_stamps, vector<vector<d
 
     return interpolated_temp_stamps ;
   }
+}
+
+bool changeInterInterval(double t, double dt, vector<double> time_stamps)
+{
+  // If end of simulation, no interpolation
+  if(t >= time_stamps[time_stamps.size()-1] || t+dt >= time_stamps[time_stamps.size()-1])
+    return true ;
   
+  int k=0 ;
+  while(t >= time_stamps[k])
+    k ++ ;
+  
+  return t+dt > time_stamps[k] ;
 }
 
 

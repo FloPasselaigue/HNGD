@@ -15,4 +15,3 @@
 1.08e-2	 Do 	cm2/s		1.08e-2	/ 2.17e-3	Zhang / Sawatzky
 0.46	 Ediff 	eV/at		0.46	/ 0.36		Zhang / Sawatzky
 25500	 Q*	    J/mol		25500	/ 25104
-0        tau    s

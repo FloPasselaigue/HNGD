@@ -30,9 +30,6 @@ class HydrogenBehaviorModel
     double returnTotalContent     ();
     double returnSolutionContent  ();
     double returnHydridesContent  ();
-    double returnKd               ();
-    double returnKg               ();
-    double returnKn               ();
     double returnPosition         ();
     double returnTimeStep         ();
 
@@ -74,12 +71,6 @@ class HydrogenBehaviorModel
     bool      _dissIsHappening                    ; // Boolean to know if dissolution kinetics need to be taken into account to compute the time step
 
     // Physical quantities
-        // 'Global'
-    double _temperature                           ; // Temperature (K)
-    double _totalContent                          ; // Total hydrogen content (wt.ppm)
-    double _solutionContent                       ; // Solid solution hydrogen content (wt.ppm)
-    double _hydridesContent                       ; // Hydrides hydrogen content (wt.ppm)
-    double _temperatureGrad                       ; // Temperature gradient (K/cm)
         // Space dependent
     std::vector<double> _positionsVector          ; // List of the node positions
     std::vector<double> _temperatureVector        ; // Temperature profile
@@ -98,9 +89,6 @@ class HydrogenBehaviorModel
     double    _Kth0, _Kmob0, _Eg, _Kg             ; // Growth
     double    _Eth0, _Eth1, _Eth2, _Eth3          ; // Hydride formation energy
     double    _D0, _Ediff, _Qstar                 ; // Diffusion
-    double    _tau, _t0                           ; // Incubation
-
-    bool _incubation ; // flag if incubation is ongoing
 
     std::vector<double> _tsspVector               ; // Supersolubility
     std::vector<double> _tssdVector               ; // Solubility

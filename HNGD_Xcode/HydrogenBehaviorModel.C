@@ -53,8 +53,6 @@ HydrogenBehaviorModel :: HydrogenBehaviorModel()
   _dt	    = 1. ;
   _p      = 2.5;
 
-  _tau= 0. ;
-  _t0 = 0. ;
 }
 
 // Define the initial conditions
@@ -88,13 +86,12 @@ void HydrogenBehaviorModel :: getInitialConditions(double* settings,double* phys
     _D0     = physicalParameters[14] ;
     _Ediff  = physicalParameters[15] ;
     _Qstar  = physicalParameters[16] ;
-    _tau    = physicalParameters[17] ;
 
     _positionsVector      .resize(_nbNodes);
-    _totalContentVector   .resize(_nbNodes,_totalContent);
-    _solutionContentVector.resize(_nbNodes,_totalContent);
+    _totalContentVector   .resize(_nbNodes);
+    _solutionContentVector.resize(_nbNodes);
+    _temperatureVector    .resize(_nbNodes);
     _hydridesContentVector.resize(_nbNodes,0.);
-    _temperatureVector    .resize(_nbNodes,_temperature);
     _tsspVector           .resize(_nbNodes,0.);
     _tssdVector           .resize(_nbNodes,0.);
     _KdVector             .resize(_nbNodes,0.);
@@ -358,11 +355,12 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
       // Nucleation kinetics
       if (_optionNGD>0) // && (_solutionContentVector[position] >= _tsspVector[position]))
       {
-//        double sigma = .23 * _tsspVector[position] ;
-//        double delta = .30 * _tsspVector[position] ;
-//        _probaVector[position] = 0.5 * erfc((delta + _tsspVector[position] - _solutionContentVector[position]) / (1.4142 * sigma)) ;
+        double sigma = 1e-4 ; // .23 * _tsspVector[position] ;
+        double delta = 0 ; //.30 * _tsspVector[position] ;
+        _probaVector[position] = 0.5 * erfc((delta + _tsspVector[position] - _solutionContentVector[position]) / (1.4142 * sigma)) ;
         
-        double Kn0 = _Kn0 * factor_f_alpha(position);// * _probaVector[position] ;
+        
+        double Kn0 = _Kn0 * factor_f_alpha(position)  * _probaVector[position] ;
         _KnVector[position] = ((17000-_hydridesContentVector[position])/17000) * Kn0 * exp(-Eth/(kb*_temperatureVector[position])) ;
 
       }
@@ -373,8 +371,11 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
 
       // Dissolution kinetics
       if ((_optionNGD>1) && (_solutionContentVector[position] < _tssdVector[position] && _hydridesContentVector[position]>0.))
-        _KdVector[position] = _Kd0 * exp(-_Ediss/(kb*_temperatureVector[position]))
-        * pow(_hydridesContentVector[position]/_totalContentVector[position], 2);
+      {
+        double modif = 1 ; //pow(_hydridesContentVector[position]/_totalContentVector[position], 2) ;
+        
+        _KdVector[position] = _Kd0 * exp(-_Ediss/(kb*_temperatureVector[position])) * modif ;
+      }
       else
         _KdVector[position] = 0. ;
 
@@ -488,8 +489,16 @@ double HydrogenBehaviorModel :: computeTimeStep()
     if(_fickLaw)
       delta_t_fick  = std::min(delta_t_fick,  pow(_positionsVector[k]-_positionsVector[k-1],2)/(2*_coeffFickVector[k]));
 
-    if(_soretEffect)
-      delta_t_soret = std::min(delta_t_soret, pow(_positionsVector[k]-_positionsVector[k-1],2)/(2*(_coeffFickVector[k]*_Qstar*_temperatureGrad*_solutionContentVector[k]/(R*pow(_temperatureVector[k],2)))));
+//    if(_soretEffect)
+//    {
+//      double dT_dx(0.) ;
+//      if (!(k==_nbNodes-1))
+//      {
+//        dT_dx = (_temperatureVector[k+1]-_temperatureVector[k])/(_positionsVector[k+1] - _positionsVector[k]);
+//
+//        delta_t_soret = std::min(delta_t_soret, pow(_positionsVector[k]-_positionsVector[k-1],2)/(2*(_coeffFickVector[k]*_Qstar*dT_dx*_solutionContentVector[k]/(R*pow(_temperatureVector[k],2)))));
+//      }
+//    }
   }
 
   if(_fickLaw)
