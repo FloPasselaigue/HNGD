@@ -10,6 +10,7 @@
 		560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637D424697F2D00BAE0D5 /* MainProgram.C */; };
 		560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */; };
 		560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 560637E2246C73D300BAE0D5 /* InOut.cpp */; };
+		56BDDC632487C646003AED54 /* EvalEvolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC612487C646003AED54 /* EvalEvolution.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,6 +37,8 @@
 		560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = HydrogenBehaviorModel.C; sourceTree = "<group>"; tabWidth = 2; };
 		560637E2246C73D300BAE0D5 /* InOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InOut.cpp; sourceTree = "<group>"; };
 		560637E3246C73D300BAE0D5 /* InOut.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InOut.hpp; sourceTree = "<group>"; };
+		56BDDC612487C646003AED54 /* EvalEvolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EvalEvolution.cpp; sourceTree = "<group>"; };
+		56BDDC622487C646003AED54 /* EvalEvolution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EvalEvolution.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +71,8 @@
 		560637CC24697ECF00BAE0D5 /* HNGD_Xcode */ = {
 			isa = PBXGroup;
 			children = (
+				56BDDC612487C646003AED54 /* EvalEvolution.cpp */,
+				56BDDC622487C646003AED54 /* EvalEvolution.hpp */,
 				560637D624697F2D00BAE0D5 /* 1_settings.txt */,
 				560637D824697F2D00BAE0D5 /* 2_temperature.txt */,
 				560637D524697F2D00BAE0D5 /* 3_physics.txt */,
@@ -142,6 +147,7 @@
 				560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */,
 				560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */,
 				560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */,
+				56BDDC632487C646003AED54 /* EvalEvolution.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
