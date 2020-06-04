@@ -2,7 +2,8 @@
 #define InOut_hpp
 
 #include <stdio.h>
-#include "HydrogenBehaviorModel.h"
+//#include "HydrogenBehaviorModel.h"
+#include "HNGD.hpp"
 
 using namespace std;
 
@@ -21,9 +22,9 @@ class InOut
         
         static void writePhysicsInCheck(double * physicalParameters);
 
-        static void writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint);
+        static void writeOuput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint);
             
-        static void writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint) ;
+        static void writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint) ;
 };
 
 #endif /* InOut_hpp */

@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "HydrogenBehaviorModel.h"
 #include "InOut.hpp"
 
 using namespace std;
@@ -306,20 +305,18 @@ void InOut::writePhysicsInCheck(double * physicalParameters)
 
 // -------------------------------- Output file writing --------------------------------
 
-void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint)
+void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint)
 {
     ofstream output ;
     output.open(path_exec + output_name, std::ios_base::app);
 
-    hydrogen_behavior.print();
-
     /* HERE */
     std::vector<double> listVector[nbOutput];
-    listVector[0] = hydrogen_behavior.returnTotalContentVector();
-    listVector[1] = hydrogen_behavior.returnSolutionContentVector();
-    listVector[2] = hydrogen_behavior.returnTemperatureVector();
-    listVector[3] = hydrogen_behavior.returnTSSdVector();
-    listVector[4] = hydrogen_behavior.returnTSSpVector();
+    listVector[0] = hngd.returnSample()->returnTotalContent();
+    listVector[1] = hngd.returnSample()->returnSolutionContent();
+    listVector[2] = hngd.returnSample()->returnTemperature();
+    listVector[3] = hngd.returnSample()->returnTSSd();
+    listVector[4] = hngd.returnSample()->returnTSSp();
 //    listVector[4] = hydrogen_behavior.returnTSSpVector();
 //    listVector[5] = hydrogen_behavior.returnTSSdVector();
 //    listVector[6] = hydrogen_behavior.returnKdVector();
@@ -327,7 +324,7 @@ void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec
 //    listVector[8] = hydrogen_behavior.returnFlux();
 
 
-    output << hydrogen_behavior.returnTimeStep() << "," << t << ","  ;
+    output << hngd.returnTimeStep() << "," << t << ","  ;
     for(int i=0; i<nbOutput; i++){
         for(int j=0; j<nbPosPrint; j++)
         {
@@ -343,7 +340,7 @@ void InOut::writeOuput(HydrogenBehaviorModel hydrogen_behavior, string path_exec
     output.close();
 }
 
-void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint)
+void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint)
 {
   ofstream output ;
   output.open(path_exec + output_name, std::ios_base::app);
@@ -351,7 +348,7 @@ void InOut :: writeInitialOutput(HydrogenBehaviorModel hydrogen_behavior, string
   if(nbNodes>0)
   {
         output << " ,Positions:,";
-        std::vector<double> positionVector = hydrogen_behavior.returnPositionVector();
+        std::vector<double> positionVector = hngd.returnSample()->returnPosition();
 
         // Defining the positions where the values will be printed
         for(int i=0; i<nbNodes; i++)

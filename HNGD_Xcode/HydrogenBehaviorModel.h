@@ -49,7 +49,6 @@ class HydrogenBehaviorModel
     std::vector<double>& returnTemperatureVector      ();
     std::vector<double>& returnCoeffFickVector        ();
     std::vector<double>& returnFlux                   ();
-    std::vector<double>& returnProba                  ();
 
     void print();//Auxiliary method to find what's wrong
 
@@ -101,8 +100,6 @@ class HydrogenBehaviorModel
     std::vector<double> _KgVector                 ; // Growth kinetics
     std::vector<double> _coeffFickVector          ; // Fick's law diffusion coefficient
     
-    std::vector<double> _probaVector              ; // Nucleation probability
-
 
     // Internal methods
     void      computeInitEq             () ; // Compute the initial equilibrium state

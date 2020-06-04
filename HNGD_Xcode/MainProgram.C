@@ -6,7 +6,7 @@
 #include <sstream>
 
 #include "InOut.hpp"
-#include "HydrogenBehaviorModel.h"
+#include "HNGD.hpp"
 #include "EvalEvolution.hpp"
 
 using namespace std;
@@ -23,10 +23,7 @@ int main(int argc, char* argv[])
   // interpolation function for temperature history
   vector<double> interpolate(double t, vector<double> time_stamps, vector<vector<double>> temp_stamps);
   
-  bool changeInterInterval(double t, double dt, vector<double> time_stamps);
-  
-  // HNGD object
-  HydrogenBehaviorModel hydrogen_behavior;
+  bool  changeInterval(double t, double dt, vector<double> time_stamps);
   
   // Evolution evaluation
   double critPrint ;
@@ -100,6 +97,8 @@ int main(int argc, char* argv[])
 
   //---------------- System Initialisation ---------------------
 
+  HNGD hngd(settings, physicalParameters) ;
+  
   // Settings
   short int typeSimu ;
   int nbNodes, nbPosPrint ;
@@ -108,17 +107,17 @@ int main(int argc, char* argv[])
   dt          = settings[9];
   dtPrint     = settings[10];
   nbPosPrint  = min(settings[2],settings[11]);
-  critPrint   = .05 ;
+  critPrint   = .01 ;
 
   // Physics
   vector<double> temp = interpolate(t, time_temp, temp_inp);
-  hydrogen_behavior.getInitialConditions(settings, physicalParameters, pos_hyd, hyd_inp, pos_temp, temp);
+  hngd.getInitialConditions(pos_hyd, hyd_inp, pos_temp, temp);
   
   // Evolution evaluation
-  evalEvolHyd.setProfile(hydrogen_behavior.returnTotalContentVector()) ;
+  evalEvolHyd.setProfile(hngd.returnSample()->returnTotalContent()) ;
   evalEvolHyd.setCriterion(critPrint) ;
   
-  evalEvolTemp.setProfile(hydrogen_behavior.returnTemperatureVector()) ;
+  evalEvolTemp.setProfile(hngd.returnSample()->returnTemperature()) ;
   evalEvolTemp.setCriterion(critPrint) ;
 
   // Output file
@@ -126,8 +125,8 @@ int main(int argc, char* argv[])
   int listPosPrint[nbPosPrint] ;
   if(typeSimu==1) // For a distribution simulation
   {
-      InOut::writeInitialOutput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint);
-      InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+      InOut::writeInitialOutput(hngd, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint);
+      InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
   }
 
   //-------------------- Time loop --------------------------
@@ -137,28 +136,31 @@ int main(int argc, char* argv[])
     do
     {
     // Interpolation of input data using the function "interpolate" implemented below
-      t += hydrogen_behavior.returnTimeStep() ;
-      printCountdown += hydrogen_behavior.returnTimeStep() ;
+      if(hngd.returnTimeStep() < 0)
+        cout<<'p' ;
+      t += hngd.returnTimeStep() ;
+      printCountdown += hngd.returnTimeStep() ;
       temp = interpolate(t, time_temp, temp_inp);
 
     // Computation
-      hydrogen_behavior.getInput(t, pos_temp, temp, dt);
-      hydrogen_behavior.computeProperties();
+      hngd.getInput(pos_temp, temp);
+      hngd.compute();
 
     // Write output
       if (printCountdown >= dtPrint ||
-          evalEvolTemp.evaluate(hydrogen_behavior.returnTemperatureVector()) ||
-          evalEvolHyd.evaluate(hydrogen_behavior.returnTotalContentVector()) ||
-          changeInterInterval(t, hydrogen_behavior.returnTimeStep(), time_temp))
+         evalEvolTemp.evaluate(hngd.returnSample()->returnTemperature()) ||
+         evalEvolHyd.evaluate(hngd.returnSample()->returnTotalContent()) ||
+          changeInterval(t, hngd.returnTimeStep(), time_temp))
       {
-        InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+        InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
         printCountdown = 0. ;
       }
 
     } while ( t < t_end );
 
     if(printCountdown>0.) // To be sure that the final state is printed
-      InOut::writeOuput(hydrogen_behavior, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+      InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+      cout << ' ' ;
   }
 
   // ------------------- End of computation -----------------------
@@ -191,7 +193,7 @@ vector<double> interpolate(double t, vector<double> time_stamps, vector<vector<d
   }
 }
 
-bool changeInterInterval(double t, double dt, vector<double> time_stamps)
+bool changeInterval(double t, double dt, vector<double> time_stamps)
 {
   // If end of simulation, no interpolation
   if(t >= time_stamps[time_stamps.size()-1] || t+dt >= time_stamps[time_stamps.size()-1])

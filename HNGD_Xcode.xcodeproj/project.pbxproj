@@ -11,6 +11,14 @@
 		560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */; };
 		560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 560637E2246C73D300BAE0D5 /* InOut.cpp */; };
 		56BDDC632487C646003AED54 /* EvalEvolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC612487C646003AED54 /* EvalEvolution.cpp */; };
+		56BDDC662487D4A1003AED54 /* Dissolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC642487D4A1003AED54 /* Dissolution.cpp */; };
+		56BDDC692487D530003AED54 /* Mechanism.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC672487D530003AED54 /* Mechanism.cpp */; };
+		56BDDC6C2487DBF5003AED54 /* Sample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC6A2487DBF5003AED54 /* Sample.cpp */; };
+		56BDDC6F2487F15A003AED54 /* Nucleation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC6D2487F15A003AED54 /* Nucleation.cpp */; };
+		56BDDC722487F251003AED54 /* Precipitation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC702487F251003AED54 /* Precipitation.cpp */; };
+		56BDDC75248818D1003AED54 /* Growth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC73248818D1003AED54 /* Growth.cpp */; };
+		56BDDC7824882454003AED54 /* Diffusion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC7624882454003AED54 /* Diffusion.cpp */; };
+		56BDDC7B248826FD003AED54 /* HNGD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC79248826FD003AED54 /* HNGD.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,17 +36,29 @@
 /* Begin PBXFileReference section */
 		560637CA24697ECF00BAE0D5 /* HNGD_Xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HNGD_Xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		560637D424697F2D00BAE0D5 /* MainProgram.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = MainProgram.C; sourceTree = "<group>"; tabWidth = 2; };
-		560637D524697F2D00BAE0D5 /* 3_physics.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 3_physics.txt; sourceTree = "<group>"; };
-		560637D624697F2D00BAE0D5 /* 1_settings.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 1_settings.txt; sourceTree = "<group>"; };
 		560637D724697F2D00BAE0D5 /* HydrogenBehaviorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HydrogenBehaviorModel.h; sourceTree = "<group>"; };
-		560637D824697F2D00BAE0D5 /* 2_temperature.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 2_temperature.txt; sourceTree = "<group>"; };
-		560637D924697F2D00BAE0D5 /* input_check.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = input_check.txt; sourceTree = "<group>"; };
-		560637DA24697F2D00BAE0D5 /* 4_hydrogen.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 4_hydrogen.txt; sourceTree = "<group>"; };
 		560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = HydrogenBehaviorModel.C; sourceTree = "<group>"; tabWidth = 2; };
 		560637E2246C73D300BAE0D5 /* InOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InOut.cpp; sourceTree = "<group>"; };
 		560637E3246C73D300BAE0D5 /* InOut.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InOut.hpp; sourceTree = "<group>"; };
 		56BDDC612487C646003AED54 /* EvalEvolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EvalEvolution.cpp; sourceTree = "<group>"; };
 		56BDDC622487C646003AED54 /* EvalEvolution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EvalEvolution.hpp; sourceTree = "<group>"; };
+		56BDDC642487D4A1003AED54 /* Dissolution.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Dissolution.cpp; sourceTree = "<group>"; };
+		56BDDC652487D4A1003AED54 /* Dissolution.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Dissolution.hpp; sourceTree = "<group>"; };
+		56BDDC672487D530003AED54 /* Mechanism.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mechanism.cpp; sourceTree = "<group>"; };
+		56BDDC682487D530003AED54 /* Mechanism.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mechanism.hpp; sourceTree = "<group>"; };
+		56BDDC6A2487DBF5003AED54 /* Sample.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sample.cpp; sourceTree = "<group>"; };
+		56BDDC6B2487DBF5003AED54 /* Sample.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sample.hpp; sourceTree = "<group>"; };
+		56BDDC6D2487F15A003AED54 /* Nucleation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Nucleation.cpp; sourceTree = "<group>"; };
+		56BDDC6E2487F15A003AED54 /* Nucleation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Nucleation.hpp; sourceTree = "<group>"; };
+		56BDDC702487F251003AED54 /* Precipitation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Precipitation.cpp; sourceTree = "<group>"; };
+		56BDDC712487F251003AED54 /* Precipitation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Precipitation.hpp; sourceTree = "<group>"; };
+		56BDDC73248818D1003AED54 /* Growth.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Growth.cpp; sourceTree = "<group>"; };
+		56BDDC74248818D1003AED54 /* Growth.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Growth.hpp; sourceTree = "<group>"; };
+		56BDDC7624882454003AED54 /* Diffusion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Diffusion.cpp; sourceTree = "<group>"; };
+		56BDDC7724882454003AED54 /* Diffusion.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Diffusion.hpp; sourceTree = "<group>"; };
+		56BDDC79248826FD003AED54 /* HNGD.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HNGD.cpp; sourceTree = "<group>"; };
+		56BDDC7A248826FD003AED54 /* HNGD.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HNGD.hpp; sourceTree = "<group>"; };
+		56BDDC7C248908B3003AED54 /* PhysicsConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhysicsConstants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,16 +93,28 @@
 			children = (
 				56BDDC612487C646003AED54 /* EvalEvolution.cpp */,
 				56BDDC622487C646003AED54 /* EvalEvolution.hpp */,
-				560637D624697F2D00BAE0D5 /* 1_settings.txt */,
-				560637D824697F2D00BAE0D5 /* 2_temperature.txt */,
-				560637D524697F2D00BAE0D5 /* 3_physics.txt */,
-				560637DA24697F2D00BAE0D5 /* 4_hydrogen.txt */,
 				560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */,
 				560637D724697F2D00BAE0D5 /* HydrogenBehaviorModel.h */,
-				560637D924697F2D00BAE0D5 /* input_check.txt */,
 				560637D424697F2D00BAE0D5 /* MainProgram.C */,
 				560637E2246C73D300BAE0D5 /* InOut.cpp */,
 				560637E3246C73D300BAE0D5 /* InOut.hpp */,
+				56BDDC642487D4A1003AED54 /* Dissolution.cpp */,
+				56BDDC652487D4A1003AED54 /* Dissolution.hpp */,
+				56BDDC672487D530003AED54 /* Mechanism.cpp */,
+				56BDDC682487D530003AED54 /* Mechanism.hpp */,
+				56BDDC6A2487DBF5003AED54 /* Sample.cpp */,
+				56BDDC6B2487DBF5003AED54 /* Sample.hpp */,
+				56BDDC6D2487F15A003AED54 /* Nucleation.cpp */,
+				56BDDC6E2487F15A003AED54 /* Nucleation.hpp */,
+				56BDDC702487F251003AED54 /* Precipitation.cpp */,
+				56BDDC712487F251003AED54 /* Precipitation.hpp */,
+				56BDDC73248818D1003AED54 /* Growth.cpp */,
+				56BDDC74248818D1003AED54 /* Growth.hpp */,
+				56BDDC7624882454003AED54 /* Diffusion.cpp */,
+				56BDDC7724882454003AED54 /* Diffusion.hpp */,
+				56BDDC79248826FD003AED54 /* HNGD.cpp */,
+				56BDDC7A248826FD003AED54 /* HNGD.hpp */,
+				56BDDC7C248908B3003AED54 /* PhysicsConstants.h */,
 			);
 			path = HNGD_Xcode;
 			sourceTree = "<group>";
@@ -145,9 +177,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */,
+				56BDDC6F2487F15A003AED54 /* Nucleation.cpp in Sources */,
+				56BDDC6C2487DBF5003AED54 /* Sample.cpp in Sources */,
+				56BDDC662487D4A1003AED54 /* Dissolution.cpp in Sources */,
+				56BDDC7824882454003AED54 /* Diffusion.cpp in Sources */,
 				560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */,
+				56BDDC7B248826FD003AED54 /* HNGD.cpp in Sources */,
+				56BDDC722487F251003AED54 /* Precipitation.cpp in Sources */,
 				560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */,
 				56BDDC632487C646003AED54 /* EvalEvolution.cpp in Sources */,
+				56BDDC75248818D1003AED54 /* Growth.cpp in Sources */,
+				56BDDC692487D530003AED54 /* Mechanism.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,7 +31,6 @@ HydrogenBehaviorModel :: HydrogenBehaviorModel()
   _lever                 =  std::vector<double>(0.) ;
   _coeffFickVector       =  std::vector<double>(0.) ;
   _flux                  =  std::vector<double>(0.) ;
-  _probaVector           =  std::vector<double>(0.) ;
 
   _D0     = 0. ;
   _Ediff  = 0. ;
@@ -103,7 +102,6 @@ void HydrogenBehaviorModel :: getInitialConditions(double* settings,double* phys
     _lever                .resize(_nbNodes,0.);
     _coeffFickVector      .resize(_nbNodes,0.);
     _flux                 .resize(_nbNodes,0.);
-    _probaVector          .resize(_nbNodes,1.);
 
     HydrogenBehaviorModel::computeLocations(0., _sampleLenght, _bias, _positionsVector);
 
@@ -213,12 +211,12 @@ void HydrogenBehaviorModel :: computeProperties()
 
         else
         {
-//          // Nucleation over TSSp
-//          if ((_optionNGD>0) && (_solutionContentVector[k] >= _tsspVector[k]))
-//            delta_solutionContent += computeNucleationRate(k) ;
+          // Nucleation over TSSp
+          if ((_optionNGD>0) && (_solutionContentVector[k] >= _tsspVector[k]))
+            delta_solutionContent += computeNucleationRate(k) ;
           
-          // Nucleation always computed
-          delta_solutionContent += computeNucleationRate(k) ;
+//          // Nucleation always computed
+//          delta_solutionContent += computeNucleationRate(k) ;
 
           // Dissolution if hydrides under TSSd
           if ((_optionNGD>1) && (_solutionContentVector[k] < _tssdVector[k] && _hydridesContentVector[k]>0.))
@@ -245,12 +243,13 @@ void HydrogenBehaviorModel :: computeProperties()
 void HydrogenBehaviorModel :: computeDiffusionFlux(int position)
 {
   double fluxFick(0.),fluxSoret(0.) ;
-  double dC_dx(0.), dT_dx=(0.) ; ;
+  double dC_dx(0.), dT_dx=(0.) ;
   
   if(_fickLaw)
   {
     if (!(position==_nbNodes-1))
-      dC_dx = (_solutionContentVector[position+1]-_solutionContentVector[position])/(_positionsVector[position+1] - _positionsVector[position]);
+      dC_dx = (_solutionContentVector[position+1]-_solutionContentVector[position])/
+                   (_positionsVector[position+1] - _positionsVector[position]);
 
     fluxFick = - _coeffFickVector[position] * dC_dx ;
   }
@@ -258,9 +257,11 @@ void HydrogenBehaviorModel :: computeDiffusionFlux(int position)
   if(_soretEffect)
   {
     if (!(position==_nbNodes-1))
-      dT_dx = (_temperatureVector[position+1]-_temperatureVector[position])/(_positionsVector[position+1] - _positionsVector[position]);
+      dT_dx = (_temperatureVector[position+1]-_temperatureVector[position])/
+               (_positionsVector[position+1] - _positionsVector[position]);
 
-    fluxSoret = - _coeffFickVector[position]*_Qstar*_solutionContentVector[position]* dT_dx/(R*pow(_temperatureVector[position],2))  ;
+    fluxSoret = - _coeffFickVector[position]*_Qstar*_solutionContentVector[position]*
+                  dT_dx/(R*pow(_temperatureVector[position],2))  ;
   }
 
   _flux[position] = fluxFick+fluxSoret ;
@@ -282,10 +283,25 @@ double HydrogenBehaviorModel :: computeNucleationRate(int position)
   if(1./_KnVector[position] < _dt)
     std::cout << "Warning : time step too big for Nucleation: 1/Kn=" << 1./_KnVector[position] << " s " << "t="<<_time<<" dt="<<_dt<<'\n';
 
-  //max to not precipitate more than equilibrium
-  return -_KnVector[position] * _solutionContentVector[position] ;
   
-//  return std::max(-_KnVector[position]*(_solutionContentVector[position] - _tsspVector[position]), -(1./_dt)*(_solutionContentVector[position] - _tsspVector[position]) );
+//  // Hydrides formation energy : cubic fit
+//  double Eth = -_Eth0 + _Eth1*_temperatureVector[position]
+//               -_Eth2*pow(_temperatureVector[position],2)
+//               +_Eth3*pow(_temperatureVector[position],3);
+//
+//  double gamma = 0.187 ;          // Interface energy (J/m2)
+//  double v = 1.64e-5 ;            // Molar volume (m3/mol)
+//  double G_v = Eth * 6.02e23 * v ;// Volume free energy change (J/m3)
+//
+//  double Gstar = 16 * 3.1415 * pow(gamma, 3) / (3 * pow(G_v, 2)) ;
+//
+//  double k = 1.381e-23 ;
+//  double driving_force = _solutionContentVector[position] * exp(-Gstar / (k*_temperatureVector[position])) ;
+//
+//  return _KnVector[position] * driving_force ;
+  
+  return std::max(-_KnVector[position]*(_solutionContentVector[position] - _tsspVector[position]),
+                             -(1./_dt)*(_solutionContentVector[position] - _tsspVector[position]) );
 }
 
 double HydrogenBehaviorModel :: computeGrowthRate(double delta_solutionContent,int position)
@@ -353,17 +369,27 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
                    +_Eth3*pow(_temperatureVector[position],3);
 
       // Nucleation kinetics
-      if (_optionNGD>0) // && (_solutionContentVector[position] >= _tsspVector[position]))
+      
+      if (_optionNGD>0 && (_solutionContentVector[position] >= _tsspVector[position]))
       {
-        double sigma = 1e-4 ; // .23 * _tsspVector[position] ;
-        double delta = 0 ; //.30 * _tsspVector[position] ;
-        _probaVector[position] = 0.5 * erfc((delta + _tsspVector[position] - _solutionContentVector[position]) / (1.4142 * sigma)) ;
-        
-        
-        double Kn0 = _Kn0 * factor_f_alpha(position)  * _probaVector[position] ;
-        _KnVector[position] = ((17000-_hydridesContentVector[position])/17000) * Kn0 * exp(-Eth/(kb*_temperatureVector[position])) ;
-
+        double Kn0 = _Kn0 * factor_f_alpha(position);
+        _KnVector[position] = std::min(1., ((17000-_hydridesContentVector[position])/17000) * Kn0 * exp(-Eth/(kb*_temperatureVector[position]))) ;
       }
+      
+//      if (_optionNGD>0)
+//      {
+//        double gamma = 0.187 ;          // Interface energy (J/m2)
+//        double a = 4.4e-10 ;            // Lattice parameter  (m)
+//        double v = 1.64e-5 ;            // Molar volume (m3/mol)
+//        double G_v = Eth * 6.02e23 * v ;// Volume free energy change (J/m3)
+//
+//        // Atom fraction of H
+//        double x = _solutionContentVector[position] / (Mh * (_solutionContentVector[position]/Mh +  (1e6 - _solutionContentVector[position])/Mzr)) ;
+//
+//        // Kinetic factor (s-1)
+//        _KnVector[position] = 16 * 3.1415 * pow(gamma, 2) * _coeffFickVector[position] * x / (pow(G_v, 2) * pow(a, 4)) ;
+//
+//      }
       
       else
         _KnVector[position] = 0. ;
@@ -372,7 +398,7 @@ void HydrogenBehaviorModel :: computePhysicalParameters(int position)
       // Dissolution kinetics
       if ((_optionNGD>1) && (_solutionContentVector[position] < _tssdVector[position] && _hydridesContentVector[position]>0.))
       {
-        double modif = 1 ; //pow(_hydridesContentVector[position]/_totalContentVector[position], 2) ;
+        double modif = 1. ; //pow(_hydridesContentVector[position]/_totalContentVector[position], 2) ;
         
         _KdVector[position] = _Kd0 * exp(-_Ediss/(kb*_temperatureVector[position])) * modif ;
       }
@@ -577,7 +603,6 @@ std::vector<double>& HydrogenBehaviorModel :: returnPositionVector()        {ret
 std::vector<double>& HydrogenBehaviorModel :: returnTemperatureVector()     {return _temperatureVector;}
 std::vector<double>& HydrogenBehaviorModel :: returnCoeffFickVector()       {return _coeffFickVector;}
 std::vector<double>& HydrogenBehaviorModel :: returnFlux()                  {return _flux ;}
-std::vector<double>& HydrogenBehaviorModel :: returnProba()                 {return _probaVector ;}
 
 double HydrogenBehaviorModel :: returnTimeStep() {return _dt ;}
 
