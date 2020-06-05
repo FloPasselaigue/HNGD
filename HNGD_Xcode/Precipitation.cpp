@@ -48,7 +48,7 @@ double Precipitation :: compute_xdelta(double T)
 
 double Precipitation :: convertToAtomFrac(double c)
 {
-    return c / (Mh * (c/Mh + (1e6 - c/Mzr))) ;
+    return c / (Mh * (c/Mh + (1e6 - c)/Mzr)) ;
 }
 
 void Precipitation :: compute_f_alpha(Sample* sample)
