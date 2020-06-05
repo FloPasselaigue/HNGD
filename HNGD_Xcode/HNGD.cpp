@@ -65,8 +65,8 @@ void HNGD :: getInitialConditions(vector<double> pos_hyd, vector<double> hyd_inp
     // Compute solubilities
     _sample->computeTSS() ;
     
-//    // Compute the initial equilibrium
-//    _sample->computeEquilibrium();
+    // Compute the initial equilibrium
+    _sample->computeEquilibrium();
 }
 
 void HNGD :: compute()
@@ -118,7 +118,6 @@ void HNGD :: compute()
             rate[k] += rateDis[k] ;
     }
     
-    
     for(int k=0; k<_NbCells; k++)
     {
         if(c_prec[k] + _dt * rate[k] < 0 || c_ss[k] + _dt * rate[k] < 0)
@@ -140,7 +139,9 @@ void HNGD :: getInput(vector<double> pos_temp, vector<double> temp_inp)
 
 void HNGD :: computeTimeStep()
 {
-    double dt = _diffusion->timeStep() ;
+    double dt = 10 ;
+    
+    dt = min(dt, _diffusion->timeStep()) ;
     dt = min(dt, _dissolution->timeStep()) ;
     dt = min(dt, _nucleation->timeStep()) ;
     dt = min(dt, _growth->timeStep()) ;

@@ -25,13 +25,13 @@ vector<double>& Mechanism :: computeRate()
 // Compute the time step for this mechanism
 double Mechanism :: timeStep()
 {
-    double dt = 10. ;
+    double max_K = *max_element(_kinetic_factor.begin(), _kinetic_factor.end()) ;
     
-    for(int k=0; k<_nbCells; k++)
-        if(_driving_force[k] != 0.)
-            dt = min(dt, 0.3/_kinetic_factor[k]);
+    if(max_K > 0)
+        return .3 / max_K ;
     
-    return dt ;
+    else
+        return 1e6 ;
 }
 
 
