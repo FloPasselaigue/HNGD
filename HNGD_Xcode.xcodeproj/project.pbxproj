@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637D424697F2D00BAE0D5 /* MainProgram.C */; };
-		560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */ = {isa = PBXBuildFile; fileRef = 560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */; };
 		560637E4246C73D300BAE0D5 /* InOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 560637E2246C73D300BAE0D5 /* InOut.cpp */; };
 		56BDDC632487C646003AED54 /* EvalEvolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC612487C646003AED54 /* EvalEvolution.cpp */; };
 		56BDDC662487D4A1003AED54 /* Dissolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56BDDC642487D4A1003AED54 /* Dissolution.cpp */; };
@@ -36,8 +35,6 @@
 /* Begin PBXFileReference section */
 		560637CA24697ECF00BAE0D5 /* HNGD_Xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HNGD_Xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		560637D424697F2D00BAE0D5 /* MainProgram.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = MainProgram.C; sourceTree = "<group>"; tabWidth = 2; };
-		560637D724697F2D00BAE0D5 /* HydrogenBehaviorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HydrogenBehaviorModel.h; sourceTree = "<group>"; };
-		560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = HydrogenBehaviorModel.C; sourceTree = "<group>"; tabWidth = 2; };
 		560637E2246C73D300BAE0D5 /* InOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InOut.cpp; sourceTree = "<group>"; };
 		560637E3246C73D300BAE0D5 /* InOut.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InOut.hpp; sourceTree = "<group>"; };
 		56BDDC612487C646003AED54 /* EvalEvolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EvalEvolution.cpp; sourceTree = "<group>"; };
@@ -91,30 +88,28 @@
 		560637CC24697ECF00BAE0D5 /* HNGD_Xcode */ = {
 			isa = PBXGroup;
 			children = (
-				56BDDC612487C646003AED54 /* EvalEvolution.cpp */,
-				56BDDC622487C646003AED54 /* EvalEvolution.hpp */,
-				560637DB24697F2D00BAE0D5 /* HydrogenBehaviorModel.C */,
-				560637D724697F2D00BAE0D5 /* HydrogenBehaviorModel.h */,
-				560637D424697F2D00BAE0D5 /* MainProgram.C */,
-				560637E2246C73D300BAE0D5 /* InOut.cpp */,
-				560637E3246C73D300BAE0D5 /* InOut.hpp */,
-				56BDDC642487D4A1003AED54 /* Dissolution.cpp */,
-				56BDDC652487D4A1003AED54 /* Dissolution.hpp */,
-				56BDDC672487D530003AED54 /* Mechanism.cpp */,
-				56BDDC682487D530003AED54 /* Mechanism.hpp */,
-				56BDDC6A2487DBF5003AED54 /* Sample.cpp */,
-				56BDDC6B2487DBF5003AED54 /* Sample.hpp */,
-				56BDDC6D2487F15A003AED54 /* Nucleation.cpp */,
-				56BDDC6E2487F15A003AED54 /* Nucleation.hpp */,
-				56BDDC702487F251003AED54 /* Precipitation.cpp */,
-				56BDDC712487F251003AED54 /* Precipitation.hpp */,
-				56BDDC73248818D1003AED54 /* Growth.cpp */,
-				56BDDC74248818D1003AED54 /* Growth.hpp */,
 				56BDDC7624882454003AED54 /* Diffusion.cpp */,
 				56BDDC7724882454003AED54 /* Diffusion.hpp */,
+				56BDDC642487D4A1003AED54 /* Dissolution.cpp */,
+				56BDDC652487D4A1003AED54 /* Dissolution.hpp */,
+				56BDDC612487C646003AED54 /* EvalEvolution.cpp */,
+				56BDDC622487C646003AED54 /* EvalEvolution.hpp */,
+				56BDDC73248818D1003AED54 /* Growth.cpp */,
+				56BDDC74248818D1003AED54 /* Growth.hpp */,
 				56BDDC79248826FD003AED54 /* HNGD.cpp */,
 				56BDDC7A248826FD003AED54 /* HNGD.hpp */,
+				560637E2246C73D300BAE0D5 /* InOut.cpp */,
+				560637E3246C73D300BAE0D5 /* InOut.hpp */,
+				560637D424697F2D00BAE0D5 /* MainProgram.C */,
+				56BDDC672487D530003AED54 /* Mechanism.cpp */,
+				56BDDC682487D530003AED54 /* Mechanism.hpp */,
+				56BDDC6D2487F15A003AED54 /* Nucleation.cpp */,
+				56BDDC6E2487F15A003AED54 /* Nucleation.hpp */,
 				56BDDC7C248908B3003AED54 /* PhysicsConstants.h */,
+				56BDDC702487F251003AED54 /* Precipitation.cpp */,
+				56BDDC712487F251003AED54 /* Precipitation.hpp */,
+				56BDDC6A2487DBF5003AED54 /* Sample.cpp */,
+				56BDDC6B2487DBF5003AED54 /* Sample.hpp */,
 			);
 			path = HNGD_Xcode;
 			sourceTree = "<group>";
@@ -184,7 +179,6 @@
 				560637DC24697F2D00BAE0D5 /* MainProgram.C in Sources */,
 				56BDDC7B248826FD003AED54 /* HNGD.cpp in Sources */,
 				56BDDC722487F251003AED54 /* Precipitation.cpp in Sources */,
-				560637DD24697F2D00BAE0D5 /* HydrogenBehaviorModel.C in Sources */,
 				56BDDC632487C646003AED54 /* EvalEvolution.cpp in Sources */,
 				56BDDC75248818D1003AED54 /* Growth.cpp in Sources */,
 				56BDDC692487D530003AED54 /* Mechanism.cpp in Sources */,

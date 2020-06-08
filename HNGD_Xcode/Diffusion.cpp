@@ -11,6 +11,14 @@ Diffusion :: Diffusion(Sample * sample, double D0, double Ed, double Q):
     _flux(vector<double>(_nbCells))
 {}
 
+void Diffusion :: computeCoeff()
+{
+    vector<double> temperature = _sample->returnTemperature() ;
+    
+    for(int k=0; k<_nbCells; k++)
+        _coeff_Fick[k] = _D0 * exp(-_Ed / (kb * temperature[k])) ;
+}
+
 vector<double> Diffusion :: computeFlux()
 {
     vector<double> positions   = _sample->returnPosition() ;
@@ -26,7 +34,7 @@ vector<double> Diffusion :: computeFlux()
         flux_fick = - _coeff_Fick[k] * dC_dx ;
         
         dT_dx = (temperature[k+1] - temperature[k]) / (positions[k+1] - positions[k]) ;
-        flux_soret = - _coeff_Fick[k] * _Q * c_ss[k] * dT_dx / (R * temperature[k]) ;
+        flux_soret = - _coeff_Fick[k] * _Q * c_ss[k] * dT_dx / (R * pow(temperature[k], 2)) ;
         
         _flux[k] = flux_fick + flux_soret ;
     }

@@ -316,7 +316,7 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     listVector[1] = hngd.returnSample()->returnSolutionContent();
     listVector[2] = hngd.returnSample()->returnTemperature();
     listVector[3] = hngd.returnSample()->returnTSSd();
-    listVector[4] = hngd.returnGro()->returnKinetics();
+    listVector[4] = hngd.returnDiff()->returnFlux();
 //    listVector[4] = hydrogen_behavior.returnTSSpVector();
 //    listVector[5] = hydrogen_behavior.returnTSSdVector();
 //    listVector[6] = hydrogen_behavior.returnKdVector();
@@ -381,7 +381,7 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
         listOutputNames[1] = "Css,"  ;
         listOutputNames[2] = "T," ;
         listOutputNames[3] = "TSSd," ;
-        listOutputNames[4] = "TSSp,"    ;
+        listOutputNames[4] = "J,"    ;
 //        listOutputNames[4] = "TSSp," ;
 //        listOutputNames[5] = "TSSd," ;
 //        listOutputNames[6] = "Kd," ;

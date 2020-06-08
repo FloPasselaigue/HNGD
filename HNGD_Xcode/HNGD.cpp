@@ -74,6 +74,7 @@ void HNGD :: compute()
     
     Precipitation :: computeCoeffs(_sample);
     _sample->computeTSS() ;
+    _diffusion->computeCoeff() ;
     
     // Compute time step
     if(_auto_dt)
@@ -83,10 +84,10 @@ void HNGD :: compute()
     vector<double> flux = _diffusion->computeFlux() ;
     
     // Compute new hydrogen distribution
-    vector<double> position = _sample->returnPosition() ;
     vector<double> c_ss = _sample->returnSolutionContent() ;
     vector<double> c_tot = _sample->returnTotalContent() ;
     vector<double> c_prec = _sample->returnHydrideContent() ;
+    vector<double> position = _sample->returnPosition() ;
     
     vector<double> new_c_ss(_NbCells) ;
     new_c_ss[0] = c_ss[0] - _dt * (flux[0]) / (position[1] - position[0]);
@@ -94,10 +95,11 @@ void HNGD :: compute()
         new_c_ss[k] = c_ss[k] - _dt * (flux[k] - flux[k-1]) / (position[k] - position[k-1]) ;
     
     _sample->setSolutionContent(new_c_ss) ;
+    _sample->updateTotalContent() ;
     
     
     // Nucleation - Growth - Dissolution
-    
+    c_ss = _sample->returnSolutionContent() ;
     vector<double> tssp = _sample->returnTSSp() ;
     vector<double> tssd = _sample->returnTSSd() ;
     

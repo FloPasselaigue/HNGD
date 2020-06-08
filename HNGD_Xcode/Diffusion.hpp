@@ -11,6 +11,7 @@ class Diffusion
 public:
     Diffusion(Sample * sample, double D0, double Ed, double Q) ;
     
+    void computeCoeff() ;
     vector<double> computeFlux() ;
     
     double timeStep() ;
