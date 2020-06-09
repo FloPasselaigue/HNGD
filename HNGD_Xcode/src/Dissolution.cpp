@@ -10,9 +10,11 @@ Dissolution :: Dissolution(Sample* sample, double Kd0, double Ed) :
 void Dissolution :: computeKinetics()
 {
     vector<double> temperature = _sample->returnTemperature() ;
+    vector<double> c_prec = _sample->returnHydrideContent() ;
+    vector<double> c_tot = _sample->returnTotalContent() ;
     
     for(int k=0; k<_nbCells; k++)
-        _kinetic_factor[k] = _Kd0 * exp(-_Ed / (kb * temperature[k])) ;
+        _kinetic_factor[k] = (_Kd0 * exp(-_Ed / (kb * temperature[k]))) * pow(c_prec[k]/c_tot[k], 2) ;
     
 }
 

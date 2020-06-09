@@ -88,30 +88,46 @@
 		560637CC24697ECF00BAE0D5 /* HNGD_Xcode */ = {
 			isa = PBXGroup;
 			children = (
-				56BDDC7624882454003AED54 /* Diffusion.cpp */,
-				56BDDC7724882454003AED54 /* Diffusion.hpp */,
-				56BDDC642487D4A1003AED54 /* Dissolution.cpp */,
-				56BDDC652487D4A1003AED54 /* Dissolution.hpp */,
-				56BDDC612487C646003AED54 /* EvalEvolution.cpp */,
-				56BDDC622487C646003AED54 /* EvalEvolution.hpp */,
-				56BDDC73248818D1003AED54 /* Growth.cpp */,
-				56BDDC74248818D1003AED54 /* Growth.hpp */,
-				56BDDC79248826FD003AED54 /* HNGD.cpp */,
-				56BDDC7A248826FD003AED54 /* HNGD.hpp */,
-				560637E2246C73D300BAE0D5 /* InOut.cpp */,
-				560637E3246C73D300BAE0D5 /* InOut.hpp */,
-				560637D424697F2D00BAE0D5 /* MainProgram.C */,
-				56BDDC672487D530003AED54 /* Mechanism.cpp */,
-				56BDDC682487D530003AED54 /* Mechanism.hpp */,
-				56BDDC6D2487F15A003AED54 /* Nucleation.cpp */,
-				56BDDC6E2487F15A003AED54 /* Nucleation.hpp */,
-				56BDDC7C248908B3003AED54 /* PhysicsConstants.h */,
-				56BDDC702487F251003AED54 /* Precipitation.cpp */,
-				56BDDC712487F251003AED54 /* Precipitation.hpp */,
-				56BDDC6A2487DBF5003AED54 /* Sample.cpp */,
-				56BDDC6B2487DBF5003AED54 /* Sample.hpp */,
+				56383760248E7AF500596C98 /* inc */,
+				5638375F248E7ACD00596C98 /* src */,
 			);
 			path = HNGD_Xcode;
+			sourceTree = "<group>";
+		};
+		5638375F248E7ACD00596C98 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				56BDDC7624882454003AED54 /* Diffusion.cpp */,
+				56BDDC642487D4A1003AED54 /* Dissolution.cpp */,
+				56BDDC612487C646003AED54 /* EvalEvolution.cpp */,
+				56BDDC73248818D1003AED54 /* Growth.cpp */,
+				56BDDC79248826FD003AED54 /* HNGD.cpp */,
+				560637E2246C73D300BAE0D5 /* InOut.cpp */,
+				560637D424697F2D00BAE0D5 /* MainProgram.C */,
+				56BDDC672487D530003AED54 /* Mechanism.cpp */,
+				56BDDC6D2487F15A003AED54 /* Nucleation.cpp */,
+				56BDDC702487F251003AED54 /* Precipitation.cpp */,
+				56BDDC6A2487DBF5003AED54 /* Sample.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		56383760248E7AF500596C98 /* inc */ = {
+			isa = PBXGroup;
+			children = (
+				56BDDC7724882454003AED54 /* Diffusion.hpp */,
+				56BDDC652487D4A1003AED54 /* Dissolution.hpp */,
+				56BDDC622487C646003AED54 /* EvalEvolution.hpp */,
+				56BDDC74248818D1003AED54 /* Growth.hpp */,
+				56BDDC7A248826FD003AED54 /* HNGD.hpp */,
+				560637E3246C73D300BAE0D5 /* InOut.hpp */,
+				56BDDC682487D530003AED54 /* Mechanism.hpp */,
+				56BDDC6E2487F15A003AED54 /* Nucleation.hpp */,
+				56BDDC7C248908B3003AED54 /* PhysicsConstants.h */,
+				56BDDC712487F251003AED54 /* Precipitation.hpp */,
+				56BDDC6B2487DBF5003AED54 /* Sample.hpp */,
+			);
+			path = inc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

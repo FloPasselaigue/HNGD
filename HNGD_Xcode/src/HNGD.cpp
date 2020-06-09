@@ -110,7 +110,7 @@ void HNGD :: compute()
     vector<double> rate(_NbCells, 0.);
     for(int k=0; k<_NbCells; k++)
     {
-        if(c_ss[k] > tssp[k])
+//        if(c_ss[k] > tssp[k])
             rate[k] += rateNuc[k] ;
         
         if(c_ss[k] > tssd[k] && (c_prec[k] > 0 || rate[k] < 0))

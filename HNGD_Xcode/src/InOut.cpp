@@ -313,7 +313,7 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     /* HERE */
     std::vector<double> listVector[nbOutput];
     listVector[0] = hngd.returnSample()->returnTotalContent();
-    listVector[1] = hngd.returnSample()->returnSolutionContent();
+    listVector[1] = hngd.returnSample()->returnHydrideContent();
     listVector[2] = hngd.returnSample()->returnTemperature();
     listVector[3] = hngd.returnSample()->returnTSSd();
     listVector[4] = hngd.returnDiff()->returnFlux();
@@ -378,7 +378,7 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
         string listOutputNames[nbOutput];
         /* HERE */
         listOutputNames[0] = "Ctot," ;
-        listOutputNames[1] = "Css,"  ;
+        listOutputNames[1] = "Cprec,"  ;
         listOutputNames[2] = "T," ;
         listOutputNames[3] = "TSSd," ;
         listOutputNames[4] = "J,"    ;

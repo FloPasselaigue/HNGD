@@ -19,6 +19,10 @@ public:
 private:
     const double _Kn0 ;
     
+//    const double _gamma ;
+//    const double _v ;
+//    double volume_energy(double T) ;
+    
     
 };
 

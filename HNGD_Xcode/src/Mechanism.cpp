@@ -28,7 +28,7 @@ double Mechanism :: timeStep()
     double max_K = *max_element(_kinetic_factor.begin(), _kinetic_factor.end()) ;
     
     if(max_K > 0)
-        return .3 / max_K ;
+        return 10 / max_K ;
     
     else
         return 1e6 ;
