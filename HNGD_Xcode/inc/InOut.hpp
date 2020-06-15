@@ -2,7 +2,6 @@
 #define InOut_hpp
 
 #include <stdio.h>
-//#include "HydrogenBehaviorModel.h"
 #include "HNGD.hpp"
 
 using namespace std;

@@ -1,6 +1,5 @@
 #include "Mechanism.hpp"
 
-
 // Constructor
 Mechanism :: Mechanism(Sample* sample):
     _nbCells(sample->returnNbCells()),
@@ -28,7 +27,7 @@ double Mechanism :: timeStep()
     double max_K = *max_element(_kinetic_factor.begin(), _kinetic_factor.end()) ;
     
     if(max_K > 0)
-        return 10 / max_K ;
+        return .5 / max_K ;
     
     else
         return 1e6 ;

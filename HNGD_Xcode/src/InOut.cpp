@@ -313,15 +313,11 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     /* HERE */
     std::vector<double> listVector[nbOutput];
     listVector[0] = hngd.returnSample()->returnTotalContent();
-    listVector[1] = hngd.returnSample()->returnHydrideContent();
-    listVector[2] = hngd.returnSample()->returnTemperature();
-    listVector[3] = hngd.returnSample()->returnTSSd();
-    listVector[4] = hngd.returnDiff()->returnFlux();
-//    listVector[4] = hydrogen_behavior.returnTSSpVector();
-//    listVector[5] = hydrogen_behavior.returnTSSdVector();
-//    listVector[6] = hydrogen_behavior.returnKdVector();
-//    listVector[7] = hydrogen_behavior.returnKnVector();
-//    listVector[8] = hydrogen_behavior.returnFlux();
+    listVector[1] = hngd.returnSample()->returnSolutionContent();
+    listVector[2] = hngd.returnSample()->returnHydrideContent();
+    listVector[3] = hngd.returnDiss()->returnRate();
+    listVector[4] = hngd.returnNuc()->returnRate();
+    listVector[5] = hngd.returnGro()->returnRate();
 
 
     output << hngd.returnTimeStep() << "," << t << ","  ;
@@ -378,11 +374,11 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
         string listOutputNames[nbOutput];
         /* HERE */
         listOutputNames[0] = "Ctot," ;
-        listOutputNames[1] = "Cprec,"  ;
-        listOutputNames[2] = "T," ;
-        listOutputNames[3] = "TSSd," ;
-        listOutputNames[4] = "J,"    ;
-//        listOutputNames[4] = "TSSp," ;
+        listOutputNames[1] = "Css,"  ;
+        listOutputNames[2] = "Cprec," ;
+        listOutputNames[3] = "rD," ;
+        listOutputNames[4] = "rN,"    ;
+        listOutputNames[5] = "rG," ;
 //        listOutputNames[5] = "TSSd," ;
 //        listOutputNames[6] = "Kd," ;
 //        listOutputNames[7] = "Kn," ;

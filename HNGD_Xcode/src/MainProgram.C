@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
   dt          = settings[9];
   dtPrint     = settings[10];
   nbPosPrint  = min(settings[2],settings[11]);
-  critPrint   = .01 ;
+  critPrint   = .05 ;
 
   // Physics
   vector<double> temp = interpolate(t, time_temp, temp_inp);
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
   evalEvolTemp.setCriterion(critPrint) ;
 
   // Output file
-  const short int nbOutput = 5 ; /* HERE */
+  const short int nbOutput = 6 ; /* HERE */
   int listPosPrint[nbPosPrint] ;
   if(typeSimu==1) // For a distribution simulation
   {

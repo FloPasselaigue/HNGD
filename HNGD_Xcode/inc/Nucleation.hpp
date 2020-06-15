@@ -2,6 +2,7 @@
 #define Nucleation_hpp
 
 #include <stdio.h>
+#include <iostream>
 #include <vector>
 #include <math.h>
 #include "Precipitation.hpp"
@@ -19,9 +20,9 @@ public:
 private:
     const double _Kn0 ;
     
-//    const double _gamma ;
-//    const double _v ;
-//    double volume_energy(double T) ;
+    const double _gamma ;
+    const double _v ;
+    double volume_energy(double T) ;
     
     
 };

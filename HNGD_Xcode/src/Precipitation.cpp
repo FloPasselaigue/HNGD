@@ -66,11 +66,7 @@ void Precipitation :: compute_f_alpha(Sample* sample)
         // alpha / alpha+delta boundaries
         double xdelta = compute_xdelta(temperature[k]) ;
         
-        // TSSd atom fraction
-        double xalpha = convertToAtomFrac(tssd[k]) ;
-        
         _f_alpha[k] = 1. - xhyd / xdelta ;
-//        f[k] = 1. - xhyd/(xdelta - xalpha) ;
     }
     
 }

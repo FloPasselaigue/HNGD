@@ -122,12 +122,13 @@ void HNGD :: compute()
     
     for(int k=0; k<_NbCells; k++)
     {
-        if(c_prec[k] + _dt * rate[k] < 0 || c_ss[k] + _dt * rate[k] < 0)
-            std::cout << "Negative Concentration" << std::endl ;
-        
         c_ss[k] += _dt * rate[k] ;
         c_prec[k] -= _dt * rate[k] ;
     }
+
+    if(*min_element(c_ss.begin(), c_ss.end())<0 || *min_element(c_prec.begin(), c_prec.end())<0)
+        std::cout << "/!\\ Negative Concentration /!\\ " << std::endl ;
+    
     _sample->setSolutionContent(c_ss) ;
     _sample->setHydrideContent(c_prec);
     _sample->updateTotalContent() ;
