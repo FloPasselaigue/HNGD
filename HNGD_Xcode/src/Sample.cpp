@@ -1,4 +1,6 @@
 #include "Sample.hpp"
+#include "PhysicsConstants.h"
+#include <iostream>
 
 Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0, double Qd) :
 
@@ -34,12 +36,12 @@ void Sample :: computeEquilibrium()
 // Solubilities computation
 void Sample :: computeTSS()
 {
-    double R = 8.314 ;
     for(int k=0; k<_nbCells; k++)
     {
-        _tssp[k] = _tssp0 * exp(-_Qp / (R * _temperature[k]) ) ;
-        _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k]) ) ;
+        _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
+        _tssp[k] = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
     }
+    
 }
 
 // Domain definition
@@ -70,4 +72,3 @@ void Sample :: spatialeInterpolation(vector<double>& refX, vector<double>& refY,
         vectorY[i] = refY[k-1] + (refY[k] - refY[k-1]) * (_position[i] - refX[k-1]) / (refX[k] - refX[k-1]);
     }
 }
-

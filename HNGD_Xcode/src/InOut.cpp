@@ -315,10 +315,8 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     listVector[0] = hngd.returnSample()->returnTotalContent();
     listVector[1] = hngd.returnSample()->returnSolutionContent();
     listVector[2] = hngd.returnSample()->returnHydrideContent();
-    listVector[3] = hngd.returnDiss()->returnRate();
-    listVector[4] = hngd.returnNuc()->returnRate();
-    listVector[5] = hngd.returnGro()->returnRate();
-
+    listVector[3] = hngd.returnSample()->returnTSSd();
+    listVector[4] = hngd.returnSample()->returnTSSp();
 
     output << hngd.returnTimeStep() << "," << t << ","  ;
     for(int i=0; i<nbOutput; i++){
@@ -343,7 +341,6 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
 
   if(nbNodes>0)
   {
-        output << " ,Positions:,";
         std::vector<double> positionVector = hngd.returnSample()->returnPosition();
 
         // Defining the positions where the values will be printed
@@ -361,34 +358,54 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
             }
             *(listPosPrint+nbPosPrint-1) = nbNodes-1;
         }
-        // Print the positions as column head
-        for(int j=0; j<nbOutput; j++){
-          for(int i=0; i<nbPosPrint; i++){
-            output << positionVector[listPosPrint[i]] << "," ;
-          }
-          output << ',' ;
-        }
-        output << "\n" ;
+      
+//        // Print the positions as column head
+//        for(int j=0; j<nbOutput; j++){
+//          for(int i=0; i<nbPosPrint; i++){
+//            output << positionVector[listPosPrint[i]] << "," ;
+//          }
+//          output << ',' ;
+//        }
+//        output << "\n" ;
+//
+//        output << "dt (s),Time (s)," ;
+//        string listOutputNames[nbOutput];
+//        /* HERE */
+//        listOutputNames[0] = "Ctot," ;
+//        listOutputNames[1] = "Css,"  ;
+//        listOutputNames[2] = "Cprec,";
+//        listOutputNames[3] = "TSSd," ;
+//        listOutputNames[4] = "TSSp," ;
+//        for(int j=0; j<nbOutput; j++){
+//          for(int i=0; i<nbPosPrint; i++) // Print the type of output as column "sub head"
+//            output << listOutputNames[j] ;
+//          output << ',' ;
+//        }
+//        output << '\n' ;
+      
+      output << "dt [s],Time [s]," ;
+      string listOutputNames[nbOutput];
+      /* HERE */
+      listOutputNames[0] = "Ctot," ;
+      listOutputNames[1] = "Css,"  ;
+      listOutputNames[2] = "Cprec,";
+      listOutputNames[3] = "TSSd," ;
+      listOutputNames[4] = "TSSp," ;
+      for(int j=0; j<nbOutput; j++){
+        for(int i=0; i<nbPosPrint; i++) // Print the type of output as column head
+          output << listOutputNames[j] ;
+        output << ',' ;
+      }
+      output << '\n' ;
 
-        output << "dt (s),Time (s)," ;
-        string listOutputNames[nbOutput];
-        /* HERE */
-        listOutputNames[0] = "Ctot," ;
-        listOutputNames[1] = "Css,"  ;
-        listOutputNames[2] = "Cprec," ;
-        listOutputNames[3] = "rD," ;
-        listOutputNames[4] = "rN,"    ;
-        listOutputNames[5] = "rG," ;
-//        listOutputNames[5] = "TSSd," ;
-//        listOutputNames[6] = "Kd," ;
-//        listOutputNames[7] = "Kn," ;
-//        listOutputNames[8] = "J," ;
-        for(int j=0; j<nbOutput; j++){
-          for(int i=0; i<nbPosPrint; i++) // Print the type of output as column "sub head"
-            output << listOutputNames[j] ;
-          output << ',' ;
+      // Print the positions as column "sub-head"
+      output << "Positions, [cm],";
+      for(int j=0; j<nbOutput; j++){
+        for(int i=0; i<nbPosPrint; i++){
+          output << positionVector[listPosPrint[i]] << "," ;
         }
-        output << '\n' ;
+        output << ',' ;
+      }
 
   }
   else //

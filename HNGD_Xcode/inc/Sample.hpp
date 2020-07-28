@@ -51,7 +51,6 @@ private:
     vector<double> _tssp ;
     vector<double> _tssd ;
     
-    
 };
 
 

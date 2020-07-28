@@ -15,7 +15,7 @@ HNGD :: HNGD(double* settings, double* physicalParameters):
                  physicalParameters[1])),   // Ed
 
     _nucleation(new Nucleation(_sample,
-                physicalParameters[2])),    // Kn
+                physicalParameters[2])),    // Kn0
 
     _growth(new Growth(_sample,
                 physicalParameters[7],      // Kmob0
@@ -30,7 +30,7 @@ HNGD :: HNGD(double* settings, double* physicalParameters):
 {
     _NbCells = (int)settings[2] ;
     
-    Precipitation :: defineEnergyPolynomial(
+    Mechanism :: defineEnergyPolynomial(
                     physicalParameters[3],  // Eth0
                     physicalParameters[4],  // Eth1
                     physicalParameters[5],  // Eth2
@@ -110,7 +110,7 @@ void HNGD :: compute()
     vector<double> rate(_NbCells, 0.);
     for(int k=0; k<_NbCells; k++)
     {
-//        if(c_ss[k] > tssp[k])
+        if(c_ss[k] > tssp[k]) 
             rate[k] += rateNuc[k] ;
         
         if(c_ss[k] > tssd[k] && (c_prec[k] > 0 || rate[k] < 0))
@@ -150,7 +150,4 @@ void HNGD :: computeTimeStep()
     dt = min(dt, _growth->timeStep()) ;
     
     _dt = dt ;
-    
-    if(_dt < 0.)
-        cout << 'p' ;
 }

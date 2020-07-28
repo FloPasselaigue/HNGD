@@ -52,7 +52,6 @@ int main(int argc, char* argv[])
     physics_name   = input_folder + name + "_phys.txt";
     hydroIC_name   = input_folder + name + "_hyd.txt" ;
     output_name    = name + "_out.csv" ;
-    
   }
   
   output.open  (path_exec + output_name, ios::out);
@@ -121,7 +120,7 @@ int main(int argc, char* argv[])
   evalEvolTemp.setCriterion(critPrint) ;
 
   // Output file
-  const short int nbOutput = 6 ; /* HERE */
+  const short int nbOutput = 5 ; /* HERE */
   int listPosPrint[nbPosPrint] ;
   if(typeSimu==1) // For a distribution simulation
   {
@@ -167,6 +166,9 @@ int main(int argc, char* argv[])
 
   cout  << "The calculation was performed!\n";
 
+  // Sound notification at the end of simulation
+  system("open \"/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/zelda.mp3\" -a VLC");
+  
   return 0;
 }
 
