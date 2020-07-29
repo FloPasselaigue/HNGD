@@ -14,7 +14,7 @@ Mechanism :: Mechanism(Sample* sample):
     _rate(_nbCells),
     _gamma(0.187),
     _v(1.64e-5)
-    {_sample =  sample ;}
+{}
 
 // Formation energy fit
 void Mechanism :: defineEnergyPolynomial(double Eth0, double Eth1, double Eth2, double Eth3)
@@ -61,7 +61,7 @@ double Mechanism :: volume_energy(double T)
 
 
 // Getters
-vector<double> Mechanism :: returnKinetics()  {return _kinetic_factor;}
-vector<double> Mechanism :: returnDrivForce() {return _driving_force ;}
+vector<double> & Mechanism :: returnKinetics()  {return _kinetic_factor;}
+vector<double> & Mechanism :: returnDrivForce() {return _driving_force ;}
 
-vector<double> Mechanism :: returnRate() {return _rate ;}
+vector<double> & Mechanism :: returnRate() {return _rate ;}

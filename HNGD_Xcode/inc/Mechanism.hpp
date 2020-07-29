@@ -18,12 +18,11 @@ class Mechanism
         
         double timeStep() ;
     
-        vector<double> returnKinetics();
-        vector<double> returnDrivForce();
-        vector<double> returnRate();
+        vector<double> & returnKinetics();
+        vector<double> & returnDrivForce();
+        vector<double> & returnRate();
         
     protected:
-        Sample * _sample ;
         const int _nbCells ;
     
         vector<double> _kinetic_factor ;

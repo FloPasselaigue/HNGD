@@ -19,7 +19,6 @@ public:
     vector<double>& returnFlux() ;
     
 private:
-    Sample * _sample ;
     const int _nbCells ;
     const double _D0 ;
     const double _Ed ;
@@ -27,6 +26,9 @@ private:
     
     vector<double> _coeff_Fick ;
     vector<double> _flux ;
+    const vector<double> * _positions ;
+    const vector<double> * _temperature ;
+    const vector<double> * _Css ;
 };
 
 #endif /* Diffusion_hpp */

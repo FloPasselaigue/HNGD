@@ -41,6 +41,19 @@ class HNGD
         bool _auto_dt ;
         double _dt ;
     
+        const vector<double> * _Css ;
+        const vector<double> * _Ctot ;
+        const vector<double> * _Cprec ;
+        const vector<double> * _position ;
+        const vector<double> * _tssp ;
+        const vector<double> * _tssd ;
+
+        const vector<double> * _flux ;
+        
+        const vector<double> * _rateNuc ;
+        const vector<double> * _rateGro ;
+        const vector<double> * _rateDis ;
+    
 };
 
 

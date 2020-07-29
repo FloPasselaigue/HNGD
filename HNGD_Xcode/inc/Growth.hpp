@@ -17,7 +17,10 @@ private:
     const double _Kmob0 ;
     const double _Eg ;
     const double _p ;
-    
+    const vector<double> * _temperature ;
+    const vector<double> * _tssd ;
+    const vector<double> * _Cprec ;
+    const vector<double> * _Ctot ;
 };
 
 

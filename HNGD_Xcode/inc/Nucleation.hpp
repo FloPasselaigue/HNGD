@@ -19,8 +19,9 @@ public:
 
 private:
     const double _Kn0 ;
-    
-    
+    const vector<double> * _temperature ;
+    const vector<double> * _tssp ;
+    const vector<double> * _Css ;
 };
 
 #endif /* Nucleation_hpp */

@@ -26,7 +26,19 @@ HNGD :: HNGD(double* settings, double* physicalParameters):
     _diffusion(new Diffusion(_sample,
                 physicalParameters[14],     // D0
                 physicalParameters[15],     // Ed
-                physicalParameters[16]))    // Q
+                physicalParameters[16])),   // Q
+
+    _Css     (& (_sample->returnSolutionContent())),
+    _Ctot    (& (_sample->returnTotalContent())),
+    _Cprec   (& (_sample->returnHydrideContent())),
+    _position(& (_sample->returnPosition())),
+    _tssp    (& (_sample->returnTSSp())),
+    _tssd    (& (_sample->returnTSSd())),
+
+    _flux    (& (_diffusion->returnFlux())),
+    _rateNuc (& (_nucleation->returnRate())),
+    _rateGro (& (_growth->returnRate())),
+    _rateDis (& (_dissolution->returnRate()))
 {
     _NbCells = (int)settings[2] ;
     
@@ -84,53 +96,47 @@ void HNGD :: compute()
     vector<double> flux = _diffusion->computeFlux() ;
     
     // Compute new hydrogen distribution
-    vector<double> c_ss = _sample->returnSolutionContent() ;
-    vector<double> c_tot = _sample->returnTotalContent() ;
-    vector<double> c_prec = _sample->returnHydrideContent() ;
-    vector<double> position = _sample->returnPosition() ;
-    
     vector<double> new_c_ss(_NbCells) ;
-    new_c_ss[0] = c_ss[0] - _dt * (flux[0]) / (position[1] - position[0]);
+    new_c_ss[0] = (*_Css)[0] - _dt * (flux[0]) / ((*_position)[1] - (*_position)[0]);
     for(int k=1; k<_NbCells; k++)
-        new_c_ss[k] = c_ss[k] - _dt * (flux[k] - flux[k-1]) / (position[k] - position[k-1]) ;
+        new_c_ss[k] = (*_Css)[k] - _dt * (flux[k] - flux[k-1]) / ((*_position)[k] - (*_position)[k-1]) ;
     
     _sample->setSolutionContent(new_c_ss) ;
     _sample->updateTotalContent() ;
     
     
     // Nucleation - Growth - Dissolution
-    c_ss = _sample->returnSolutionContent() ;
-    vector<double> tssp = _sample->returnTSSp() ;
-    vector<double> tssd = _sample->returnTSSd() ;
+    new_c_ss = *_Css ;
+    vector<double> new_c_prec = *_Cprec ;
     
-    vector<double> rateNuc = _nucleation->computeRate() ;
-    vector<double> rateGro = _growth->computeRate() ;
-    vector<double> rateDis = _dissolution->computeRate() ;
+    _nucleation->computeRate() ;
+    _growth->computeRate() ;
+    _dissolution->computeRate() ;
     
     vector<double> rate(_NbCells, 0.);
     for(int k=0; k<_NbCells; k++)
     {
-        if(c_ss[k] > tssp[k]) 
-            rate[k] += rateNuc[k] ;
+        if((*_Css)[k] > (*_tssp)[k])
+            rate[k] += (*_rateNuc)[k] ;
         
-        if(c_ss[k] > tssd[k] && (c_prec[k] > 0 || rate[k] < 0))
-            rate[k] += rateGro[k] ;
+        if((*_Css)[k] > (*_tssd)[k] && ((*_Cprec)[k] > 0 || rate[k] < 0))
+            rate[k] += (*_rateGro)[k] ;
         
-        if(c_ss[k] < tssd[k] && (c_prec[k] > 0 || rate[k] < 0))
-            rate[k] += rateDis[k] ;
+        if((*_Css)[k] < (*_tssd)[k] && ((*_Cprec)[k] > 0 || rate[k] < 0))
+            rate[k] += (*_rateDis)[k] ;
     }
     
     for(int k=0; k<_NbCells; k++)
     {
-        c_ss[k] += _dt * rate[k] ;
-        c_prec[k] -= _dt * rate[k] ;
+        new_c_ss[k] += _dt * rate[k] ;
+        new_c_prec[k] -= _dt * rate[k] ;
     }
 
-    if(*min_element(c_ss.begin(), c_ss.end())<0 || *min_element(c_prec.begin(), c_prec.end())<0)
+    if(*min_element(new_c_ss.begin(), new_c_ss.end())<0 || *min_element(new_c_prec.begin(), new_c_prec.end())<0)
         std::cout << "/!\\ Negative Concentration /!\\ " << std::endl ;
     
-    _sample->setSolutionContent(c_ss) ;
-    _sample->setHydrideContent(c_prec);
+    _sample->setSolutionContent(new_c_ss) ;
+    _sample->setHydrideContent(new_c_prec);
     _sample->updateTotalContent() ;
 }
 

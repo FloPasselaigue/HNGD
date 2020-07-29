@@ -25,6 +25,12 @@ class Precipitation : public Mechanism
         static void compute_leverRule(Sample* sample) ;
         static void compute_f_alpha(Sample* sample) ;
         static void compute_chi(Sample* sample) ;
+    
+    private:
+        static vector<double> * _totalContent ;
+        static vector<double> * _hydrideContent ;
+        static vector<double> * _tssd ;
+        static vector<double> * _temperature ;
 };
 
 #endif /* Precipitation_hpp */
