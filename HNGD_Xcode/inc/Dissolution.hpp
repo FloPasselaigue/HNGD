@@ -1,3 +1,7 @@
+/**
+This class implements hydride dissolution for the HNGD model
+*/
+
 #ifndef Dissolution_hpp
 #define Dissolution_hpp
 
@@ -14,16 +18,21 @@ class Dissolution : public Mechanism
     
     public:
         Dissolution(Sample* sample, double Kd0, double Ed);
+    
+        // Compute the kinetic coefficient at each position
         void computeKinetics()  ;
+    
+        // Compute the driving force at each position
         void computeDrivForce() ;
     
     private:
-        const double _Kd0 ;
-        const double _Ed ;
-        const vector<double> * _temperature ;
-        const vector<double> * _tssd ;
-        const vector<double> * _Css ;
-        const vector<double> * _Ctot ;
+        const double _Kd0 ; // Preexponential factor for dissolution kinetics
+        const double _Ed ;  // Activation energy for diffusion
+        
+        const vector<double> * _temperature ; // temperature profile
+        const vector<double> * _tssd ;        // solubility profile
+        const vector<double> * _Css ;         // solid solution profile
+        const vector<double> * _Ctot ;        // hydrogen profile
 };
 
 

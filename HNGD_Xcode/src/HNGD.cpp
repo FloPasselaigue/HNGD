@@ -3,8 +3,8 @@
 
 HNGD :: HNGD(double* settings, double* physicalParameters):
 
-    _sample(new Sample((int)settings[2],    // number of cells
-                settings[7],                // bias
+    _sample(new Sample((int)settings[0],    // number of cells
+                settings[1],                // bias
                 physicalParameters[10],     // tssp0
                 physicalParameters[11],     // Qp
                 physicalParameters[12],     // tssd0
@@ -25,38 +25,41 @@ HNGD :: HNGD(double* settings, double* physicalParameters):
 
     _diffusion(new Diffusion(_sample,
                 physicalParameters[14],     // D0
-                physicalParameters[15],     // Ed
-                physicalParameters[16])),   // Q
+                physicalParameters[1],     // Ed
+                physicalParameters[15])),   // Q
 
-    _Css     (& (_sample->returnSolutionContent())),
-    _Ctot    (& (_sample->returnTotalContent())),
-    _Cprec   (& (_sample->returnHydrideContent())),
-    _position(& (_sample->returnPosition())),
-    _tssp    (& (_sample->returnTSSp())),
-    _tssd    (& (_sample->returnTSSd())),
+    _Css     (& (_sample->returnSolutionContent())),// Solid solution profile
+    _Ctot    (& (_sample->returnTotalContent())),   // Hydrogen profile
+    _Cprec   (& (_sample->returnHydrideContent())), // Hydride profile
+    _position(& (_sample->returnPosition())),       // Positions vector
+    _tssp    (& (_sample->returnTSSp())),           // Supersolubility profile
+    _tssd    (& (_sample->returnTSSd())),           // Solubility profile
 
-    _flux    (& (_diffusion->returnFlux())),
-    _rateNuc (& (_nucleation->returnRate())),
-    _rateGro (& (_growth->returnRate())),
-    _rateDis (& (_dissolution->returnRate()))
+    _flux    (& (_diffusion->returnFlux())),        // Hydrogen flux profile
+
+    _rateNuc (& (_nucleation->returnRate())),       // Nucleation rate at each position
+    _rateGro (& (_growth->returnRate())),           // Growth rate at each position
+    _rateDis (& (_dissolution->returnRate()))       // Dissolution rate at each position
 {
-    _NbCells = (int)settings[2] ;
+    _NbCells = (int)settings[0] ; // Number of nodes
     
-    Mechanism :: defineEnergyPolynomial(
+    Precipitation :: defineEnergyPolynomial(
                     physicalParameters[3],  // Eth0
                     physicalParameters[4],  // Eth1
                     physicalParameters[5],  // Eth2
                     physicalParameters[6]); // Eth3
     
     // Create geometry
-    _sample->computeLocations(0., settings[8]) ;
+    _sample->computeLocations(0., settings[2]) ;
+                        //   (0., sample length)
     
     // Time step management
-    if(settings[9] < 0.)
+    if(settings[3] < 0.)
         _auto_dt = true ;
-    else {
+    else
+    {
         _auto_dt = false ;
-        _dt = settings[9] ;
+        _dt = settings[3] ;
     }
     
 }
@@ -69,7 +72,7 @@ void HNGD :: getInitialConditions(vector<double> pos_hyd, vector<double> hyd_inp
     // Create initial hydrogen profile
     _sample->spatialeInterpolation(pos_hyd, hyd_inp, _sample->returnTotalContent()) ;
     _sample->spatialeInterpolation(pos_hyd, hyd_inp, _sample->returnSolutionContent()) ;
-    _sample->setHydrideContent(vector<double>(_NbCells,1e-3));
+    _sample->setHydrideContent(vector<double>(_NbCells,0.));
     
     // Create initial temperature profile
     _sample->spatialeInterpolation(pos_temp, temp_inp, _sample->returnTemperature()) ;
@@ -81,38 +84,54 @@ void HNGD :: getInitialConditions(vector<double> pos_hyd, vector<double> hyd_inp
     _sample->computeEquilibrium();
 }
 
+
+
 void HNGD :: compute()
 {
+    //                  ---- COMPUTE THE PHYSICAL PARAMETERS ----
     
+    // Compute the coefficients used to compute nucleation and growth kinetics
     Precipitation :: computeCoeffs(_sample);
+    
+    // Compute the supersolubility and solubility profiles
     _sample->computeTSS() ;
+    
+    // Compute the diffusion coefficient at each position
     _diffusion->computeCoeff() ;
     
     // Compute time step
     if(_auto_dt)
         computeTimeStep() ;
     
+    
+    
+    //                ---- COMPUTE THE NEW SOLID SOLUTION PROFILE ----
+    
     // Compute hydrogen flux
-    vector<double> flux = _diffusion->computeFlux() ;
+    _diffusion->computeFlux() ;
     
     // Compute new hydrogen distribution
     vector<double> new_c_ss(_NbCells) ;
-    new_c_ss[0] = (*_Css)[0] - _dt * (flux[0]) / ((*_position)[1] - (*_position)[0]);
+    new_c_ss[0] = (*_Css)[0] - _dt * ((*_flux)[0]) / ((*_position)[1] - (*_position)[0]);
     for(int k=1; k<_NbCells; k++)
-        new_c_ss[k] = (*_Css)[k] - _dt * (flux[k] - flux[k-1]) / ((*_position)[k] - (*_position)[k-1]) ;
+        new_c_ss[k] = (*_Css)[k] - _dt * ((*_flux)[k] - (*_flux)[k-1]) / ((*_position)[k] - (*_position)[k-1]) ;
     
     _sample->setSolutionContent(new_c_ss) ;
     _sample->updateTotalContent() ;
     
     
-    // Nucleation - Growth - Dissolution
+    
+    
+    //                    ---- NUCLEATION  GROWTH  DISSOLUTION ----
     new_c_ss = *_Css ;
     vector<double> new_c_prec = *_Cprec ;
     
+    // Compute the rate of each mechanism
     _nucleation->computeRate() ;
     _growth->computeRate() ;
     _dissolution->computeRate() ;
     
+    // Precipitation/dissolution algorithme to compute the total rate at each position
     vector<double> rate(_NbCells, 0.);
     for(int k=0; k<_NbCells; k++)
     {
@@ -126,28 +145,37 @@ void HNGD :: compute()
             rate[k] += (*_rateDis)[k] ;
     }
     
+    // Compute the new solid solution and hydride profiles
     for(int k=0; k<_NbCells; k++)
     {
         new_c_ss[k] += _dt * rate[k] ;
         new_c_prec[k] -= _dt * rate[k] ;
     }
 
+    // Safeguard against negative concentration
     if(*min_element(new_c_ss.begin(), new_c_ss.end())<0 || *min_element(new_c_prec.begin(), new_c_prec.end())<0)
         std::cout << "/!\\ Negative Concentration /!\\ " << std::endl ;
     
+    // Update the hydrogen profiles
     _sample->setSolutionContent(new_c_ss) ;
     _sample->setHydrideContent(new_c_prec);
     _sample->updateTotalContent() ;
 }
 
+
+
 void HNGD :: getInput(vector<double> pos_temp, vector<double> temp_inp)
 {
+    // Update the state of the sample to compute the next state
     _sample->spatialeInterpolation(pos_temp, temp_inp, _sample->returnTemperature());
 }
 
 
+
+
 void HNGD :: computeTimeStep()
 {
+    // Compute the time step associated with each phenomenon and use the smallest one
     double dt = 10 ;
     
     dt = min(dt, _diffusion->timeStep()) ;

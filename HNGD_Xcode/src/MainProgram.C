@@ -1,3 +1,21 @@
+/**
+  This code is the implementation of the Hydride Nucleation-Growth-Dissolution (HNGD) model.
+  It was developped by Florian Passelaigue, based on Evrard Lacroix's PhD work.
+ 
+  The model development is described in
+  E. Lacroix, P.-C. A. Simon, A. T. Motta, and J. Almer, “Zirconium hydride precipitation and
+  dissolution kinetics in the hysteresis region in zirconium alloys,” ASTM (submitted), 2019.
+ 
+  The implementation. verification and validation of this code is described in chapter 2 of
+  F. Passelaigue, "Hydride Nucleation-Growth-Dissolution model: implementation in BISON",
+  Master of Science thesis, The Pennsylvania State University, 2020
+  available on Penn State library:
+  https://etda.libraries.psu.edu/catalog/17572fpp8
+ 
+  NB: the file structure was changed and new classes were created since the MS thesis was written.
+    Refer to the README file for more details
+ */
+
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -13,36 +31,47 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  double  t       = 0.,             // Time
-          dt      = 0.,             // Time step
-          dtPrint = 0.,             // Duration between 2 prints
-          t_end   = 0.;             // Totale duration
-
   ofstream output;                  // output csv file
 
-  // interpolation function for temperature history
+  // Interpolation function for temperature history
+  // This function returns the temperature profile as a vector, based on the current time t
+  // and the temperature steps specified in the temperature input file.
   vector<double> interpolate(double t, vector<double> time_stamps, vector<vector<double>> temp_stamps);
   
-  bool  changeInterval(double t, double dt, vector<double> time_stamps);
   
-  // Evolution evaluation
-  double critPrint ;
+  // The following function and variables are used to
+  // determine if the current state should be written in the output
+  
+  // This function checks if a time stamp specified in the temperature input file was passed.
+  bool changeInterval(double t, double dt, vector<double> time_stamps);
+  
+  // The EvalEvolution objects determine if a given quantity
+  // changed sufficiently to justify a print in the output
   EvalEvolution evalEvolTemp ; // for temperature
   EvalEvolution evalEvolHyd ;  // for hydrogen
 
-  //----------------------- Define execution folder and file names --------------------
+  
+  //----------------------- DEFINE EXECUTION FOLDER AND INPUT FILES NAMES --------------------
+  
+  // Path to the folder to use /*custom*/
   string path_exec = "/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/" ;
   
-  string input_folder = "input_files/" ;
-  
-  // Default file names
+  // Default file names.
+  // These files will be used if no argument is given to the programm when launched.
+  // These files must be in the folder defined by the path_exec variable
   string settings_name = "1_settings.txt" ;
   string treatment_name= "2_temperature.txt" ;
   string physics_name  = "3_physics.txt" ;
   string hydroIC_name  = "4_hydrogen.txt" ;
   string output_name   = "output" ;
   
-  // Name can be given as parameters
+  // Name of the folder containing the input files.
+  // The input files specified by the argument given at
+  // launch must be placed in this folder
+  string input_folder = "input_files/" ;
+  
+  // Argument reading
+  // The argument must be used as a prefix to all input files.
   if(argc > 1)
   {
     string name(argv[1]);
@@ -54,27 +83,29 @@ int main(int argc, char* argv[])
     output_name    = name + "_out.csv" ;
   }
   
-  output.open  (path_exec + output_name, ios::out);
-  
+  output.open(path_exec + output_name, ios::out);
   if (output.fail())
   {
     cout  << "File opening error!\nProgram stopped.\n";
     exit(1);
   }
 
-  //-------------------- Input reading ------------------------
+  
+  
+  //-------------------- INPUT READING ------------------------
+  // More details on the format and information contained in each file in the README file
 
-  // Simulation settings
-  short int nbSettings = 12 ;
+  // Simulation settings contained in the *_set.txt file
+  short int nbSettings = 6 ;
   double settings[nbSettings];
   InOut::getSettings(nbSettings, settings, path_exec, settings_name);
 
-  // Physical parameters
-  int nbPhysicalParameters = 18 ;
+  // Physical parameters contained in the *_phys.txt file
+  int nbPhysicalParameters = 16 ;
   double physicalParameters[nbPhysicalParameters];
   InOut::getPhysics(nbPhysicalParameters, physicalParameters, path_exec, physics_name);
 
-  // Thermal treatment
+  // Thermal treatment contained in the *_temp.txt file
   vector<double>         time_temp(0), // input time stamps for temperature (s)
                          pos_temp(0);  // input positions for temperature (cm)
   vector<vector<double>> temp_inp;     // input temperature values (K)
@@ -85,88 +116,83 @@ int main(int argc, char* argv[])
   for(int k=0; k<thermal_treatment.size()-2; k++)
     temp_inp.push_back(thermal_treatment[k+2]) ;
   
-  t_end = time_temp[time_temp.size()-1];
+  double t_end = time_temp[time_temp.size()-1];
 
-
-  // Initial H profile
+  // Initial H profile contained in the *_hyd.txt file
   vector<vector<double>> hydrogenIC = InOut::getICHydrogen(path_exec, hydroIC_name);
   vector<double> pos_hyd = hydrogenIC[0] ;
   vector<double> hyd_inp = hydrogenIC[1] ;
   
 
-  //---------------- System Initialisation ---------------------
+  //---------------- SYSTEM INITIALIZATION ---------------------
 
+  // The HNGD object collects the input information to build
+  // a Sample and the objects associated with each phenomenon
   HNGD hngd(settings, physicalParameters) ;
   
-  // Settings
-  short int typeSimu ;
-  int nbNodes, nbPosPrint ;
-  typeSimu    = (int)settings[0] ;
-  nbNodes     = settings[2];
-  dt          = settings[9];
-  dtPrint     = settings[10];
-  nbPosPrint  = min(settings[2],settings[11]);
-  critPrint   = .05 ;
+  // Some of the settings are needed for the time loop
+  int nbNodes        = settings[0];
+  int nbPosPrint     = settings[0];
+  double dtPrint     = settings[4];
+  double critPrint   = settings[5] ;
 
-  // Physics
+  // Initialize the temperature and hydrogen profiles
+  double t = 0. ;
   vector<double> temp = interpolate(t, time_temp, temp_inp);
   hngd.getInitialConditions(pos_hyd, hyd_inp, pos_temp, temp);
   
-  // Evolution evaluation
+  // Associate the EvalEvolution objects to the profiles
   evalEvolHyd.setProfile(hngd.returnSample()->returnTotalContent()) ;
   evalEvolHyd.setCriterion(critPrint) ;
   
   evalEvolTemp.setProfile(hngd.returnSample()->returnTemperature()) ;
   evalEvolTemp.setCriterion(critPrint) ;
 
-  // Output file
-  const short int nbOutput = 5 ; /* HERE */
+  // Initialize the output file
+  const short int nbOutput = 5 ; /*custom*/
   int listPosPrint[nbPosPrint] ;
-  if(typeSimu==1) // For a distribution simulation
-  {
-      InOut::writeInitialOutput(hngd, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint);
-      InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
-  }
+  InOut::writeInitialOutput(hngd, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint);
+  InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+  
 
-  //-------------------- Time loop --------------------------
+  
+  //-------------------- TIME LOOP --------------------------
   double printCountdown(0.);
-  if(typeSimu==1)  // For a distribution simulation
+  
+  do
   {
-    do
+  // Interpolation of input temperature using the function "interpolate" implemented below
+    t += hngd.returnTimeStep() ;
+    printCountdown += hngd.returnTimeStep() ;
+    temp = interpolate(t, time_temp, temp_inp);
+
+  // Compute the new system state
+    hngd.getInput(pos_temp, temp);
+    hngd.compute();
+
+  // Write output if enough time has elapsed or if the temperature profile has changed
+  // or if the hydrogen profile has changed of if a time stamp was reached
+    if (printCountdown >= dtPrint ||
+       evalEvolTemp.evaluate(hngd.returnSample()->returnTemperature()) ||
+       evalEvolHyd.evaluate(hngd.returnSample()->returnTotalContent()) ||
+        changeInterval(t, hngd.returnTimeStep(), time_temp))
     {
-    // Interpolation of input data using the function "interpolate" implemented below
-      if(hngd.returnTimeStep() < 0)
-        cout<<'p' ;
-      t += hngd.returnTimeStep() ;
-      printCountdown += hngd.returnTimeStep() ;
-      temp = interpolate(t, time_temp, temp_inp);
-
-    // Computation
-      hngd.getInput(pos_temp, temp);
-      hngd.compute();
-
-    // Write output
-      if (printCountdown >= dtPrint ||
-         evalEvolTemp.evaluate(hngd.returnSample()->returnTemperature()) ||
-         evalEvolHyd.evaluate(hngd.returnSample()->returnTotalContent()) ||
-          changeInterval(t, hngd.returnTimeStep(), time_temp))
-      {
-        InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
-        printCountdown = 0. ;
-      }
-
-    } while ( t < t_end );
-
-    if(printCountdown>0.) // To be sure that the final state is printed
       InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
-      cout << ' ' ;
-  }
+      printCountdown = 0. ;
+    }
 
-  // ------------------- End of computation -----------------------
+  } while ( t < t_end );
+
+  if(printCountdown>0.) // To be sure that the final state is printed
+    InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
+    cout << ' ' ;
+  
+
+  // ------------------- END OF COMPUTATION -----------------------
 
   cout  << "The calculation was performed!\n";
 
-  // Sound notification at the end of simulation
+  // Sound notification at the end of simulation /*custom*/
   system("open \"/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/zelda.mp3\" -a VLC");
   
   return 0;
@@ -207,51 +233,3 @@ bool changeInterval(double t, double dt, vector<double> time_stamps)
   
   return t+dt > time_stamps[k] ;
 }
-
-
-// else  // for a TTT diagram
-// {
-//   // Output file
-//   ofstream output ;
-//   output.open("output.csv", std::ios_base::app);
-//
-//   // Completion parameter
-//   double completionTarget = 0.99 ;
-//   double completion = 0.;
-//   for(int k=0; k<i-1; k++)
-//   {
-//     for(int j=0; j<time_temp[k+1]; j++)
-//     {
-//       temp = temp_inp[k] + (j/time_temp[k+1])*(temp_inp[k+1]-temp_inp[k]) ;
-//       cout<<temp<<endl;
-//       t = 0. ;
-//       completion = 0.;
-//       hydrogen_behavior = HydrogenBehaviorModel() ;
-//       hydrogen_behavior.getInitialConditions(settings, physicalParameters, temp, 0.);
-//       if(hydrogen_behavior.returnTSSdVector()[0] > hydrogen_behavior.returnTotalContentVector()[0])
-//       {
-//         cout<<"Error: at temperature "<<temp<<"K the solubility is higher than the hydrogen content\n";
-//         continue ;
-//       }
-//
-//       // Each simulation runs untill the completion reaches the target
-//       while (completion < completionTarget)
-//       {
-//         hydrogen_behavior.getInput(t, temp, grad, dt);
-//         hydrogen_behavior.computeProperties();
-//         t += hydrogen_behavior.returnTimeStep() ;
-//
-//         printCountdown += hydrogen_behavior.returnTimeStep() ;
-//         if (printCountdown >= dtPrint)
-//         {
-//           cout<<"t="<<t<<"s\n";
-//           printCountdown = 0. ;
-//         }
-//
-//         completion = hydrogen_behavior.returnAdvancement();
-//       }
-//       output << temp << ',' << t << ",\n" ;
-//     }
-//   }
-//   output.close();
-// }

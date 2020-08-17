@@ -2,26 +2,33 @@
 #include "Diffusion.hpp"
 
 Diffusion :: Diffusion(Sample * sample, double D0, double Ed, double Q):
-    _nbCells(sample->returnNbCells()),
-    _D0(D0),
-    _Ed(Ed),
-    _Q(Q),
-    _coeff_Fick(vector<double>(_nbCells)),
-    _flux(vector<double>(_nbCells)),
-    _positions(& (sample->returnPosition())),
+    _nbCells    (sample->returnNbCells()),
+
+    _D0         (D0),
+    _Ed         (Ed),
+    _Q          (Q),
+    _coeff_Fick (vector<double>(_nbCells)),
+    _flux       (vector<double>(_nbCells)),
+
+    _positions  (& (sample->returnPosition())),
     _temperature(& (sample->returnTemperature())),
-    _Css(& (sample->returnSolutionContent()))
+    _Css        (& (sample->returnSolutionContent())),
+    _Cprec      (& (sample->returnSolutionContent()))
 {}
 
 void Diffusion :: computeCoeff()
 {
+    // The diffusion coefficient follows an Arrhenius law
     for(int k=0; k<_nbCells; k++)
         _coeff_Fick[k] = _D0 * exp(-_Ed / (kb * (*_temperature)[k])) ;
 }
 
-vector<double> Diffusion :: computeFlux()
+void Diffusion :: computeFlux()
 {
+    // Solid solution and temperature gradients
     double dC_dx(0.), dT_dx(0.) ;
+    
+    // Fick's law and Soret effect diffusion components
     double flux_fick(0.), flux_soret(0.) ;
     
     for(int k=0; k<_nbCells-1; k++)
@@ -35,11 +42,11 @@ vector<double> Diffusion :: computeFlux()
         _flux[k] = flux_fick + flux_soret ;
     }
     
-    return _flux ;
 }
 
 double  Diffusion :: timeStep()
 {
+    // The time step associated with diffusion is computed using the convergen criterion from finite element theory
     double dt = pow((*_positions)[1] - (*_positions)[0], 2) / (2 * _coeff_Fick[0]) ;
     for(int k=2; k<_nbCells; k++)
         dt = min(dt, pow((*_positions)[k] - (*_positions)[k-1], 2) / (2 * _coeff_Fick[k]));

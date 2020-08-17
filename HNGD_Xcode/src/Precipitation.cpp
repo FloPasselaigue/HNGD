@@ -1,26 +1,33 @@
 #include "Precipitation.hpp"
 
+// Static members initialization
+
+double Precipitation::_Eth0(0.) ;
+double Precipitation::_Eth1(0.) ;
+double Precipitation::_Eth2(0.) ;
+double Precipitation::_Eth3(0.) ;
+
 vector<double> Precipitation::_lever_rule(0);
 vector<double> Precipitation::_f_alpha(0);
 vector<double> Precipitation::_chi(0);
 
 vector<double> * Precipitation::_hydrideContent = new vector<double>(0) ;
-vector<double> * Precipitation::_totalContent = new vector<double>(0) ;
-vector<double> * Precipitation::_temperature = new vector<double>(0) ;
-vector<double> * Precipitation::_tssd = new vector<double>(0) ;
+vector<double> * Precipitation::_totalContent   = new vector<double>(0) ;
+vector<double> * Precipitation::_temperature    = new vector<double>(0) ;
+vector<double> * Precipitation::_tssd           = new vector<double>(0) ;
 
 // Constructor
 Precipitation :: Precipitation(Sample* sample):
     Mechanism(sample)
 {
-    _lever_rule.resize(sample->returnNbCells()) ;
-    _f_alpha.resize(sample->returnNbCells()) ;
-    _chi.resize(sample->returnNbCells()) ;
+    _lever_rule .resize(sample->returnNbCells()) ;
+    _f_alpha    .resize(sample->returnNbCells()) ;
+    _chi        .resize(sample->returnNbCells()) ;
     
     _hydrideContent = & (sample->returnHydrideContent()) ;
-    _totalContent = & (sample->returnTotalContent()) ;
-    _temperature = & (sample->returnTemperature()) ;
-    _tssd = & (sample->returnTSSd()) ;
+    _totalContent   = & (sample->returnTotalContent()) ;
+    _temperature    = & (sample->returnTemperature()) ;
+    _tssd           = & (sample->returnTSSd()) ;
 }
 
 void Precipitation :: computeCoeffs(Sample* sample)
@@ -30,15 +37,29 @@ void Precipitation :: computeCoeffs(Sample* sample)
     compute_chi(sample) ;
 }
 
+// Formation energy fit
+void Precipitation :: defineEnergyPolynomial(double Eth0, double Eth1, double Eth2, double Eth3)
+{
+    _Eth0 = Eth0 ;
+    _Eth1 = Eth1 ;
+    _Eth2 = Eth2 ;
+    _Eth3 = Eth3 ;
+}
+
 double Precipitation :: compute_xdelta(double T)
 {
-    // 3rd degree polynome fitting
+    // 3rd degree polynomial fit
     return -9.93e-11*pow(T,3) + 8.48e-8*pow(T,2) - 5.73e-5*T + 0.623 ;
 }
 
 double Precipitation :: convertToAtomFrac(double c)
 {
     return c / (Mh * (c/Mh + (1e6 - c)/Mzr)) ;
+}
+
+double Precipitation :: formation_energy(double T)
+{
+    return -_Eth0 + _Eth1 * T - _Eth2 * pow(T,2) + _Eth3 * pow(T,3);
 }
 
 void Precipitation :: compute_f_alpha(Sample* sample)
@@ -55,7 +76,6 @@ void Precipitation :: compute_f_alpha(Sample* sample)
     }
     
 }
-
 
 void Precipitation :: compute_leverRule(Sample* sample)
 {

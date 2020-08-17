@@ -5,13 +5,13 @@
 Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0, double Qd) :
 
     _nbCells(nbCells),
-    _bias(bias),
+    _bias   (bias),
 
-    _tssp0(tssp0),
-    _Qp(Qp),
+    _tssp0  (tssp0),
+    _Qp     (Qp),
 
-    _tssd0(tssd0),
-    _Qd(Qd)
+    _tssd0  (tssd0),
+    _Qd     (Qd)
 {
     _position       = vector<double>(_nbCells) ;
     _temperature    = vector<double>(_nbCells) ;

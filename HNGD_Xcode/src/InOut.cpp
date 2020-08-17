@@ -28,7 +28,7 @@ void InOut::getSettings(int nb, double* settings, string path_exec, string file_
       inpset.ignore(999,'\n');
     }
     
-    InOut::writeSettingsInCheck(settings);
+    InOut::writeSettingsInCheck(settings, path_exec);
     
     inpset.close();
 }
@@ -50,7 +50,7 @@ void InOut::getPhysics(int nb, double* physics, string path_exec, string file_na
       inpphys.ignore(999,'\n');
     }
     
-    InOut::writePhysicsInCheck(physics);
+    InOut::writePhysicsInCheck(physics, path_exec);
     
     inpphys.close();
 }
@@ -80,7 +80,7 @@ vector<vector<double>> InOut::getThermalTreatment(string path_exec, string file_
     istringstream stream_pos(line_pos) ;
     double pos ;
     while(stream_pos >> pos)
-    pos_temp.push_back(pos) ;
+        pos_temp.push_back(pos) ;
 
     unsigned long nb_pos = pos_temp.size() ;
 
@@ -109,8 +109,11 @@ vector<vector<double>> InOut::getThermalTreatment(string path_exec, string file_
 
     } while(!(inptemp.eof()));
 
-    temp_inp.pop_back() ;
-    time_temp.pop_back();
+    if(time_temp[i-1] == time_temp[i-2])
+    {
+        temp_inp.pop_back() ;
+        time_temp.pop_back();
+    }
 
 //    for(int k=0; k<temp_inp.size(); k++)
 //    {
@@ -180,105 +183,41 @@ vector<vector<double>> InOut::getICHydrogen(string path_exec, string file_name)
 
 
 // -------------------------------- Check file writing --------------------------------
-void InOut::writeSettingsInCheck(double * settings)
+void InOut::writeSettingsInCheck(double * settings, string path_exec)
 {
   ofstream chkinp ;
-  chkinp.open("input_check.txt", ios::out);
+  chkinp.open(path_exec + "input_check.txt", ios::out);
 
-  //typeSimu
-  switch((int)settings[0])
-  {
-    case 1: chkinp << "Computation of hydrogen distribution\n"; break;
-    case 2: chkinp << "Computation of a TTT diagram\n" ; break ;
-    default:cout   << "Invalid value for typeSimu in settings\nProgram has stopped\n";exit(1);break;
-  }
-
-  //optionNGD
-  switch ((int)settings[1])
-  {
-    case 0: chkinp << "This simulation doesnt compute precipitation\n"; break;
-    case 1: chkinp << "This simulation compute Nucleation\n" ; break ;
-    case 2: chkinp << "This simulation compute Nucleation and Dissolution\n" ; break ;
-    case 3: chkinp << "This simulation compute Nucleation Growth and Dissolution\n" ; break ;
-    default:cout << "Invalid value for optionNGD in settings\nProgram has stopped\n";exit(1);break;
-  }
 
   // nbNodes
-  if((int)settings[2]>0)
-    chkinp << "Space discretization: " << settings[2] << " cells\n";
-  else
-    chkinp << "No space discretization\n" ;
-
-  // kinetics
-  if((int)settings[1]>0){
-    switch((int)settings[3])
-    {
-      case 1: chkinp << "1 -> This simulation compute the equilibrium\n" ; break;
-      case 2: chkinp << "2 -> Kinetics are constant\n" ; break;
-      case 3: chkinp << "3 -> Kinetics depend exponentially on the temperature\n" ; break;
-      default:cout << "Invalid value for kinetics in settings\nProgram has stopped\n";exit(1);break;
-    }
-  }
-
-  // solubility
-  switch((int)settings[4])
-  {
-    case 0: chkinp << "0 -> Solubilities depend linearly on the temperature\n" ; break;
-    case 1: chkinp << "1 -> Solubilities depend exponentially on the temperature\n" ; break;
-    default:cout << "Invalid value for solubilities in settings\nProgram has stopped\n";exit(1);break;
-  }
-
-  // diffusion
-  switch((int)settings[5])
-  {
-    case 0: chkinp << "0 -> No diffusion computation\n" ; break;
-    case 1: chkinp << "1 -> Diffusion is computed with constant coefficient D\n" ; break;
-    case 2: chkinp << "2 -> Diffusion is computed with exponential coefficient D\n" ; break;
-    default:cout << "Invalid value for diffusion in settings\nProgram has stopped\n";exit(1);break;
-  }
-
-  // Soret effect
-  switch((int)settings[6])
-  {
-    case 0: chkinp << "0 -> No Soret effect computation\n" ; break;
-    case 1: chkinp << "1 -> Soret efffect is computed with constant coefficient D\n" ; break;
-    case 2: chkinp << "2 -> Soret efffect is computed with exponential coefficient D\n" ; break;
-    default:cout << "Invalid value for Soret effect in settings\nProgram has stopped\n";exit(1);break;
-  }
-
-  chkinp << "(If the two previous effet don't have the same option, D is computed according to the highest option)\n";
+  chkinp << "Space discretization: " << settings[0] << " cells\n";
 
   // bias
-  chkinp << "Bias: " << settings[7] << endl ;
+  chkinp << "Bias: " << settings[1] << endl ;
 
   // Lenght
-  chkinp << "Sample lenght: " << settings[8] << endl;
+  chkinp << "Sample lenght: " << settings[2] << endl;
 
   // dt
-  if(settings[9]<=0)
+  if(settings[3]<=0)
     chkinp << "Adaptative time step" << endl;
   else
-    chkinp << "Time step: " << settings[9] << endl;
+    chkinp << "Time step: " << settings[3] << endl;
 
   // dtPrint
-  chkinp << "Printing time step: " << settings[10] << endl << endl ;
+  chkinp << "Printing time step: " << settings[4] << endl ;
 
-  // nbPositionPrint
-  chkinp << "The output is written for " << min(settings[2],settings[11]) << " locations" << endl << endl ;
+  // Evolution criterion
+    chkinp << "Evolution criterion: " << settings[5] << endl ;
 
   chkinp.close();
 
-  if((int)settings[2]==0 && (int)settings[5]>0 && (int)settings[6]>0)
-  {
-    cout << "Error, you can't have diffusion without space discretization\n Program has stopped\n" ;
-    exit(1);
-  }
 }
 
-void InOut::writePhysicsInCheck(double * physicalParameters)
+void InOut::writePhysicsInCheck(double * physicalParameters, string path_exec)
 {
   ofstream chkinp ;
-  chkinp.open("input_check.txt", std::ios_base::app);
+  chkinp.open(path_exec + "input_check.txt", std::ios_base::app);
 
   chkinp << "Kd0:\t"  << physicalParameters[0]  << "\ts-1\n" ;
   chkinp << "Ediss:\t"<< physicalParameters[1]  << "\teV/at\n" ;
@@ -295,9 +234,7 @@ void InOut::writePhysicsInCheck(double * physicalParameters)
   chkinp << "TSSd0:\t"<< physicalParameters[12] << "\twt.ppm\n" ;
   chkinp << "Qtssd:\t"<< physicalParameters[13] << "\tJ/(mol.K)\n" ;
   chkinp << "D0:\t"   << physicalParameters[14] << "\tJ/(mol.K)\n" ;
-  chkinp << "Ediff:\t"<< physicalParameters[15] << "\tJ/(mol.K)\n" ;
-  chkinp << "Q*:\t"   << physicalParameters[16] << "\tJ/mol\n" ;
-  chkinp << "tau:\t"  << physicalParameters[17] << "\ts\n" ;
+  chkinp << "Q*:\t"   << physicalParameters[15] << "\tJ/mol\n" ;
 
   chkinp.close();
 }
@@ -310,7 +247,7 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     ofstream output ;
     output.open(path_exec + output_name, std::ios_base::app);
 
-    /* HERE */
+    /*custom*/
     std::vector<double> listVector[nbOutput];
     listVector[0] = hngd.returnSample()->returnTotalContent();
     listVector[1] = hngd.returnSample()->returnSolutionContent();
@@ -385,12 +322,13 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
       
       output << "dt [s],Time [s]," ;
       string listOutputNames[nbOutput];
-      /* HERE */
+      /*custom*/
       listOutputNames[0] = "Ctot," ;
       listOutputNames[1] = "Css,"  ;
       listOutputNames[2] = "Cprec,";
       listOutputNames[3] = "TSSd," ;
       listOutputNames[4] = "TSSp," ;
+      
       for(int j=0; j<nbOutput; j++){
         for(int i=0; i<nbPosPrint; i++) // Print the type of output as column head
           output << listOutputNames[j] ;
