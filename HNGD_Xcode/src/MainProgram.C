@@ -182,10 +182,6 @@ int main(int argc, char* argv[])
     }
 
   } while ( t < t_end );
-
-  if(printCountdown>0.) // To be sure that the final state is printed
-    InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
-    cout << ' ' ;
   
 
   // ------------------- END OF COMPUTATION -----------------------

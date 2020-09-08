@@ -156,6 +156,11 @@ void HNGD :: compute()
     if(*min_element(new_c_ss.begin(), new_c_ss.end())<0 || *min_element(new_c_prec.begin(), new_c_prec.end())<0)
         std::cout << "/!\\ Negative Concentration /!\\ " << std::endl ;
     
+    // Real 0 content if it goes below 1e-10 wt.ppm
+    for(int k=0; k<_NbCells; k++)
+        if(new_c_prec[k] < 1e-10)
+            new_c_prec[k] = 0 ;
+    
     // Update the hydrogen profiles
     _sample->setSolutionContent(new_c_ss) ;
     _sample->setHydrideContent(new_c_prec);

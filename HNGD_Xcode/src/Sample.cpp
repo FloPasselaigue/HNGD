@@ -41,7 +41,6 @@ void Sample :: computeTSS()
         _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
         _tssp[k] = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
     }
-    
 }
 
 // Domain definition
