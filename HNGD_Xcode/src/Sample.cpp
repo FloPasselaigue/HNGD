@@ -36,10 +36,24 @@ void Sample :: computeEquilibrium()
 // Solubilities computation
 void Sample :: computeTSS()
 {
+    double delta = .6 ;
+    double f_max = .55 ;
+    
+    double c = delta ;
+    double b = (1 - delta) / (1 - 1 / (2 * f_max)) ;
+    double a = -b / (2 * f_max) ;
+    
     for(int k=0; k<_nbCells; k++)
     {
         _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
-        _tssp[k] = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
+        
+        double x_prec = _hydrideContent[k] / (Mh * (_hydrideContent[k]/Mh + (1e6 - _hydrideContent[k])/Mzr)) ;
+        double x_delta = -9.93e-11*pow(_temperature[k],3) + 8.48e-8*pow(_temperature[k],2) - 5.73e-5*_temperature[k] + 0.623 ;
+        double x_alpha = _tssd[k] / (Mh * (_tssd[k]/Mh + (1e6 - _tssd[k])/Mzr)) ;
+        double f_alpha = 1 - x_prec / (x_delta - x_alpha) ;
+        _tssd[k] *= a * pow(f_alpha, 2) + b * f_alpha + c ;
+        
+        _tssp[k] = _tssd[k] ; // _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
     }
 }
 
