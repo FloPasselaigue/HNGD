@@ -32,6 +32,7 @@ public:
     
     // Getters
     const int returnNbCells() {return _nbCells;}
+    
     vector<double>& returnPosition        () {return _position;}
     vector<double>& returnTemperature     () {return _temperature;}
     vector<double>& returnSolutionContent () {return _solutionContent;}
@@ -47,6 +48,9 @@ public:
     
     void updateTotalContent () {for(int k=0; k<_nbCells; k++)
         _totalContent[k] = _solutionContent[k]+_hydrideContent[k] ;}
+    
+    void reset_t_since_T_Changed()               {_t_since_T_changed =  0. ;}
+    void increment_t_since_T_changed(double dt)  {_t_since_T_changed += dt ;}
     
 private:
     const int _nbCells ; // Number of nodes
@@ -64,6 +68,8 @@ private:
     vector<double> _tssp ;  // Supersolubility profile
     vector<double> _tssd ;  // Solubility profile
     
+    double _t_since_T_changed ;
+    double _tau ;
 };
 
 

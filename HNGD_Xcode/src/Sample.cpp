@@ -20,6 +20,9 @@ Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0
     _totalContent   = vector<double>(_nbCells) ;
     _tssd           = vector<double>(_nbCells) ;
     _tssp           = vector<double>(_nbCells) ;
+    
+    _t_since_T_changed = 0. ;
+    _tau = 1e4 ;
 }
 
 // Compute the equilibrium for the initial conditions
@@ -37,32 +40,35 @@ void Sample :: computeEquilibrium()
 void Sample :: computeTSS()
 {
     double delta = .6 ;
-    double f_max = .55 ;
-    
-    double c = delta ;
-    double b = (1 - delta) / (1 - 1 / (2 * f_max)) ;
-    double a = -b / (2 * f_max) ;
+    double g = 6  ;
+
+    double c = 1. ;
+    double b = g  ;
+    double a = delta - g - 1 ;
     
     for(int k=0; k<_nbCells; k++)
     {
         _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
+        _tssd[k] *= a * pow(_hydrideContent[k]/17000, 2) + b * _hydrideContent[k]/17000 + c ;
         
-        double x_prec = _hydrideContent[k] / (Mh * (_hydrideContent[k]/Mh + (1e6 - _hydrideContent[k])/Mzr)) ;
-        double x_delta = -9.93e-11*pow(_temperature[k],3) + 8.48e-8*pow(_temperature[k],2) - 5.73e-5*_temperature[k] + 0.623 ;
-        double x_alpha = _tssd[k] / (Mh * (_tssd[k]/Mh + (1e6 - _tssd[k])/Mzr)) ;
-        double f_alpha = 1 - x_prec / (x_delta - x_alpha) ;
-        _tssd[k] *= a * pow(f_alpha, 2) + b * f_alpha + c ;
-        
-        _tssp[k] = _tssd[k] ; // _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
+        double tssp = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
+        _tssp[k] = _tssd[k] + (tssp - _tssd[k]) * exp(-_t_since_T_changed / _tau) ;
     }
 }
 
 // Domain definition
 void Sample :: computeLocations(double x0, double xEnd)
 {
-    double  sum = 1. + _bias ;
+    // If the bias is negative, the mesh refinement is made on the "right" side
+    double bias ;
+    if(_bias < 0.)
+        bias = - _bias ;
+    else
+        bias = _bias ;
+        
+    double  sum = 1. + bias ;
     for(int k=0; k<_nbCells-3; k++)
-        sum = 1. + _bias*sum ;
+        sum = 1. + bias*sum ;
 
     const double initialLenght = (xEnd - x0)/sum ;
 
@@ -70,9 +76,17 @@ void Sample :: computeLocations(double x0, double xEnd)
     _position[1] = x0 + initialLenght ;
     
     for(int k=2; k<_nbCells-1; k++)
-        _position[k] = _position[k-1] + _bias*(_position[k-1] - _position[k-2]) ;
+        _position[k] = _position[k-1] + bias*(_position[k-1] - _position[k-2]) ;
     
     _position[_nbCells-1] = xEnd  ;
+    
+    if(_bias < 0.)
+    {
+        reverse(_position.begin(), _position.end()) ;
+        for(int k=0; k<_nbCells; k++)
+            _position[k] = xEnd - _position[k] ;
+    }
+        
 }
 
 // Interpolation

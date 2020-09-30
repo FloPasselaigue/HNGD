@@ -25,7 +25,7 @@ class HNGD
                                   vector<double> pos_temp,vector<double> temp_inp);
     
     // Get the current temperature from the main program
-        void getInput(vector<double> pos_temp, vector<double> temp_inp);
+        void getInput(bool T_changed, vector<double> pos_temp, vector<double> temp_inp);
     
     // Compute the evolution of the system during a time step
         void compute() ;

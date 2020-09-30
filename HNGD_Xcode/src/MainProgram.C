@@ -2,7 +2,13 @@
   This code is the implementation of the Hydride Nucleation-Growth-Dissolution (HNGD) model.
   It was developped by Florian Passelaigue, based on Evrard Lacroix's PhD work.
  
-  The model development is described in
+  The model development is described in Lacroix's PhD dissertation
+  "Modeling zirconium hydride precipitation and dissolution in zirconium alloys", The Pennsylvania
+  State University, 2019, available on Penn State library:
+  https://etda.libraries.psu.edu/catalog/16618eul152
+ 
+  and in
+ 
   E. Lacroix, P.-C. A. Simon, A. T. Motta, and J. Almer, “Zirconium hydride precipitation and
   dissolution kinetics in the hysteresis region in zirconium alloys,” ASTM (submitted), 2019.
  
@@ -139,6 +145,7 @@ int main(int argc, char* argv[])
   // Initialize the temperature and hydrogen profiles
   double t = 0. ;
   vector<double> temp = interpolate(t, time_temp, temp_inp);
+  vector<double> mem_temp = temp ;
   hngd.getInitialConditions(pos_hyd, hyd_inp, pos_temp, temp);
   
   // Associate the EvalEvolution objects to the profiles
@@ -166,8 +173,18 @@ int main(int argc, char* argv[])
     printCountdown += hngd.returnTimeStep() ;
     temp = interpolate(t, time_temp, temp_inp);
 
+  // Check if the temperature profile changed
+    bool T_changed = false ;
+    for(int k=0; k<temp.size(); k++)
+      if(abs(temp[k] - mem_temp[k]) / mem_temp[k] > 0.01)
+      {
+        T_changed = true ;
+        mem_temp = temp ;
+        break ;
+      }
+    
   // Compute the new system state
-    hngd.getInput(pos_temp, temp);
+    hngd.getInput(T_changed, pos_temp, temp);
     hngd.compute();
 
   // Write output if enough time has elapsed or if the temperature profile has changed
