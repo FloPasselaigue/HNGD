@@ -2,7 +2,8 @@
 #include "PhysicsConstants.h"
 #include <iostream>
 
-Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0, double Qd) :
+Sample :: Sample(int nbCells, double bias, double tssp0, double Qp,
+                 double tssd0, double Qd, double tau, double delta, double g):
 
     _nbCells(nbCells),
     _bias   (bias),
@@ -11,7 +12,12 @@ Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0
     _Qp     (Qp),
 
     _tssd0  (tssd0),
-    _Qd     (Qd)
+    _Qd     (Qd),
+
+    _tau    (tau),
+
+    _delta  (delta),
+    _g      (g)
 {
     _position       = vector<double>(_nbCells) ;
     _temperature    = vector<double>(_nbCells) ;
@@ -22,7 +28,6 @@ Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0
     _tssp           = vector<double>(_nbCells) ;
     
     _t_since_T_changed = 0. ;
-    _tau = 1e4 ;
 }
 
 // Compute the equilibrium for the initial conditions
@@ -39,12 +44,9 @@ void Sample :: computeEquilibrium()
 // Solubilities computation
 void Sample :: computeTSS()
 {
-    double delta = .6 ;
-    double g = 6  ;
-
+    double a = _delta - _g - 1 ;
+    double b = _g  ;
     double c = 1. ;
-    double b = g  ;
-    double a = delta - g - 1 ;
     
     for(int k=0; k<_nbCells; k++)
     {

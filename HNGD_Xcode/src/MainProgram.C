@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
   InOut::getSettings(nbSettings, settings, path_exec, settings_name);
 
   // Physical parameters contained in the *_phys.txt file
-  int nbPhysicalParameters = 16 ;
+  int nbPhysicalParameters = 19 ;
   double physicalParameters[nbPhysicalParameters];
   InOut::getPhysics(nbPhysicalParameters, physicalParameters, path_exec, physics_name);
 

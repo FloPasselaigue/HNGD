@@ -8,7 +8,10 @@ HNGD :: HNGD(double* settings, double* physicalParameters):
                 physicalParameters[10],     // tssp0
                 physicalParameters[11],     // Qp
                 physicalParameters[12],     // tssd0
-                physicalParameters[13])),   // Qd
+                physicalParameters[13],     // Qd
+                physicalParameters[16],     // tau
+                physicalParameters[17],     // delta
+                physicalParameters[18])),   // g
 
     _dissolution(new Dissolution(_sample,
                  physicalParameters[0],     // Kd0

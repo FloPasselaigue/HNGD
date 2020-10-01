@@ -16,7 +16,7 @@ class Sample
 {
     
 public:
-    Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0, double Qd);
+    Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0, double Qd, double tau, double delta, double g);
     
     // Compute the solubility/supersolubility profiles
     void computeTSS();
@@ -70,6 +70,8 @@ private:
     
     double _t_since_T_changed ;
     double _tau ;
+    double _delta ;
+    double _g ;
 };
 
 
