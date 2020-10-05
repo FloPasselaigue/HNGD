@@ -34,3 +34,19 @@ xcuserdata/
 /*.gcno
 
 # End of https://www.gitignore.io/api/xcode
+
+HNGD_Xcode.xcodeproj/xcshareddata/
+HNGD_Xcode/*.asv
+HNGD_Xcode/*.m
+HNGD_Xcode/outputs/
+HNGD_Xcode/plots/
+HNGD_Xcode/*.csv
+HNGD_Xcode/outputs/*
+HNGD_Xcode/plots/*
+HNGD_Xcode/data/*
+HNGD_Xcode/input_files/*
+HNGD_Xcode/input_check.txt
+
+HNGD_Xcode.xcodeproj/xcshareddata/xcschemes/HNGD_Xcode.xcscheme
+HNGD_Xcode.xcodeproj/xcshareddata/xcschemes/HNGD_Xcode_test.xcscheme
+HNGD_Xcode.xcodeproj/xcuserdata/fpp8.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
