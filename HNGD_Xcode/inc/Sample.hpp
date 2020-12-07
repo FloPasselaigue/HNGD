@@ -39,7 +39,7 @@ public:
     vector<double>& returnHydrideContent  () {return _hydrideContent;}
     vector<double>& returnTotalContent    () {return _totalContent;}
     vector<double>& returnTSSp            () {return _tssp;}
-    vector<double>& returnTSSd            () {return _tssd;}
+    vector<double>& returnTSSd            () {return _tssd;} 
     
     // Setters
     void setTemperature     (vector<double> temperature){_temperature     = vector<double>(temperature) ;}

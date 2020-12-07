@@ -44,15 +44,18 @@ void Sample :: computeEquilibrium()
 // Solubilities computation
 void Sample :: computeTSS()
 {
-    double a = _delta - _g - 1 ;
-    double b = _g  ;
-    double c = 1. ;
-    
     for(int k=0; k<_nbCells; k++)
     {
+//        _g = 2.11E-07 * exp(76051 / (R * _temperature[k]));
+//        _g = 24.8 - 0.0353 * _temperature[k] ;
+
+        double a = _delta - _g - 1 ;
+        double b = _g  ;
+        double c = 1. ;
+
         _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
         _tssd[k] *= a * pow(_hydrideContent[k]/17000, 2) + b * _hydrideContent[k]/17000 + c ;
-        
+
         double tssp = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
         _tssp[k] = _tssd[k] + (tssp - _tssd[k]) * exp(-_t_since_T_changed / _tau) ;
     }

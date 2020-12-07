@@ -165,6 +165,7 @@ int main(int argc, char* argv[])
   
   //-------------------- TIME LOOP --------------------------
   double printCountdown(0.);
+  InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
   
   do
   {
@@ -206,7 +207,7 @@ int main(int argc, char* argv[])
   cout  << "The calculation was performed!\n";
 
   // Sound notification at the end of simulation /*custom*/
-  system("open \"/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/zelda.mp3\" -a VLC");
+//  system("open \"/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/zelda.mp3\" -a VLC");
   
   return 0;
 }
