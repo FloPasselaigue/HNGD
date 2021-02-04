@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
   cout  << "The calculation was performed!\n";
 
   // Sound notification at the end of simulation /*custom*/
-//  system("open \"/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/zelda.mp3\" -a VLC");
+  system("open \"/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/notif.mp3\" -a VLC");
   
   return 0;
 }

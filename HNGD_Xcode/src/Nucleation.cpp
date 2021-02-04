@@ -15,7 +15,7 @@ void Nucleation :: computeKinetics()
     // Nucleation kinetics follow an Arrhenius law modified my a couple of factors
     // that include a hydrogen/hydride content dependency
     for(int k=0; k<_nbCells; k++)
-        _kinetic_factor[k] = _Kn0 * _f_alpha[k] * _chi[k]
+        _kinetic_factor[k] = _Kn0 * _f_alpha[k]
         * exp( -formation_energy((*_temperature)[k]) / (kb * (*_temperature)[k]) ) ;
 
 }
