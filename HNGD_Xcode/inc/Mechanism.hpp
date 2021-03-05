@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <algorithm>
 #include "Sample.hpp"
 #include "PhysicsConstants.h"
 

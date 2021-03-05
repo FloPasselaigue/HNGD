@@ -1,7 +1,7 @@
 /**
     This class implements the HNGD model. It uses secondary classes
     for each phenomenon: hydrogen Diffusion, hydride Nucleation, Growth and Dissolution.
-    An additionnal class Sample is used to create the geometry, manage the temperature
+    An additional class Sample is used to create the geometry, manage the temperature
     profile and compute the solubility/supersolubility profiles.
  */
 
@@ -14,11 +14,12 @@
 #include "Nucleation.hpp"
 #include "Growth.hpp"
 #include "Dissolution.hpp"
+#include <algorithm>
 
 class HNGD
 {
     public:
-        HNGD(double* settings, double* physicalParameters);
+        HNGD(double* settings, double* physicalParameters, double xEnd, int geometry); //TODO: geometry is part of settings
         
     // Use the information taken from the input files to create the initial state
         void getInitialConditions(vector<double> pos_hyd, vector<double> hyd_inp,
@@ -50,6 +51,8 @@ class HNGD
         Dissolution* _dissolution ;
     
         int _NbCells ;  // number of nodes in the geometry
+        int _geometry ;    // Geometry type
+        double _radius ;    // Radius or Sample Length
         bool _auto_dt ; // time step fixed by user or computed at each step
         double _dt ;    // time step value
 

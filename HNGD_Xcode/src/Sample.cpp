@@ -44,21 +44,49 @@ void Sample :: computeTSS()
 }
 
 // Domain definition
-void Sample :: computeLocations(double x0, double xEnd)
+void Sample :: computeLocations(double x0, double xEnd, int _geometry)
 {
-    double  sum = 1. + _bias ;
-    for(int k=0; k<_nbCells-3; k++)
-        sum = 1. + _bias*sum ;
+//    double  sum = 1. + _bias ;
+//    for(int k=0; k<_nbCells-3; k++)
+//        sum = 1. + _bias*sum ;
+//    const double initialLenght = (xEnd - x0)/sum ;
 
-    const double initialLenght = (xEnd - x0)/sum ;
+//    _position[0] = x0 ;
+//    _position[1] = x0 + initialLenght ;
+//
+//    for(int k=2; k<_nbCells-1; k++)
+//        _position[k] = _position[k-1] + _bias*(_position[k-1] - _position[k-2]) ;
+//
+//    _position[_nbCells-1] = xEnd  ;
 
-    _position[0] = x0 ;
-    _position[1] = x0 + initialLenght ;
-    
-    for(int k=2; k<_nbCells-1; k++)
-        _position[k] = _position[k-1] + _bias*(_position[k-1] - _position[k-2]) ;
-    
-    _position[_nbCells-1] = xEnd  ;
+    if (_geometry > 0)
+    {
+        // Polar
+        // bias not implemented in polar geometry
+        
+        const double initialLenght = 2*M_PI/_nbCells;
+        _position[0] = x0 ;
+        for (int k=1; k<_nbCells; k++)
+            _position[k] = _position[k-1] + initialLenght;
+    }
+
+    else
+    {
+        // Linear
+        double  sum = 1. + _bias ;
+        for(int k=0; k<_nbCells-3; k++)
+            sum = 1. + _bias*sum ;
+
+        const double initialLenght = (xEnd - x0)/sum ;
+
+        _position[0] = x0 ;
+        _position[1] = x0 + initialLenght ;
+
+        for(int k=2; k<_nbCells-1; k++)
+            _position[k] = _position[k-1] + _bias*(_position[k-1] - _position[k-2]) ;
+
+        _position[_nbCells-1] = xEnd  ;
+    }
 }
 
 // Interpolation

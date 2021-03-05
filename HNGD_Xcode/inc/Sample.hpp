@@ -25,7 +25,7 @@ public:
     void computeEquilibrium();
     
     // Create the geometry
-    void computeLocations(double x0, double xEnd);
+    void computeLocations(double x0, double xEnd, int geometry);
     
     // Interpolate the input profile [refX; refY] on each point of the geometry
     void spatialeInterpolation(vector<double>& refX, vector<double>& refY, vector<double>& vectorY);
@@ -63,6 +63,9 @@ private:
     
     vector<double> _tssp ;  // Supersolubility profile
     vector<double> _tssd ;  // Solubility profile
+    
+    vector<double> _dC_dx; // TODO: why are gradients needed here?
+    vector<double> _dT_dx;
     
 };
 

@@ -271,7 +271,7 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     output.close();
 }
 
-void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint)
+void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint, int geometry) // TODO: geometry does not need to be a parameter
 {
   ofstream output ;
   output.open(path_exec + output_name, std::ios_base::app);
@@ -337,7 +337,11 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
       output << '\n' ;
 
       // Print the positions as column "sub-head"
-      output << "Positions, [cm],";
+      if (geometry > 0)
+            output << "Positions, [rad],";
+      else
+          output << "Positions, [cm],";
+      
       for(int j=0; j<nbOutput; j++){
         for(int i=0; i<nbPosPrint; i++){
           output << positionVector[listPosPrint[i]] << "," ;

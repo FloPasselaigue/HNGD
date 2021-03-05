@@ -4,9 +4,9 @@
  
   The model development is described in
   E. Lacroix, P.-C. A. Simon, A. T. Motta, and J. Almer, “Zirconium hydride precipitation and
-  dissolution kinetics in the hysteresis region in zirconium alloys,” ASTM (submitted), 2019.
+  dissolution kinetics in the hysteresis region in zirconium alloys” ASTM (submitted), 2019.
  
-  The implementation. verification and validation of this code is described in chapter 2 of
+  The original implementation. verification and validation of this code is described in chapter 2 of
   F. Passelaigue, "Hydride Nucleation-Growth-Dissolution model: implementation in BISON",
   Master of Science thesis, The Pennsylvania State University, 2020
   available on Penn State library:
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   string path_exec = "/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/" ;
   
   // Default file names.
-  // These files will be used if no argument is given to the programm when launched.
+  // These files will be used if no argument is given to the program when launched.
   // These files must be in the folder defined by the path_exec variable
   string settings_name = "1_settings.txt" ;
   string treatment_name= "2_temperature.txt" ;
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
   // More details on the format and information contained in each file in the README file
 
   // Simulation settings contained in the *_set.txt file
-  short int nbSettings = 6 ;
+  short int nbSettings = 7 ;
   double settings[nbSettings];
   InOut::getSettings(nbSettings, settings, path_exec, settings_name);
 
@@ -128,7 +128,10 @@ int main(int argc, char* argv[])
 
   // The HNGD object collects the input information to build
   // a Sample and the objects associated with each phenomenon
-  HNGD hngd(settings, physicalParameters) ;
+//  HNGD hngd(settings, physicalParameters) ;
+  unsigned int n = pos_temp.size() - 1;
+  double xEnd = pos_temp[n];
+  HNGD hngd(settings, physicalParameters, xEnd, settings[6]) ; // TODO: less parameters
   
   // Some of the settings are needed for the time loop
   int nbNodes        = settings[0];
@@ -151,7 +154,7 @@ int main(int argc, char* argv[])
   // Initialize the output file
   const short int nbOutput = 5 ; /*custom*/
   int listPosPrint[nbPosPrint] ;
-  InOut::writeInitialOutput(hngd, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint);
+  InOut::writeInitialOutput(hngd, path_exec, output_name, nbNodes, nbOutput, nbPosPrint, listPosPrint, settings[6]); //TODO: less parameters
   InOut::writeOuput(hngd, path_exec, output_name, nbNodes, nbOutput, t, 0., nbPosPrint, listPosPrint);
   
 

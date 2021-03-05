@@ -19,7 +19,7 @@ class InOut
     // Read the physical parameters file
         static void getPhysics(int nb, double* physics, string path_exec, string file_name);
     
-    // Read the teamperature history
+    // Read the temperature history
         static vector<vector<double>> getThermalTreatment(string path_exec, string file_name);
     
     // Read the initial hydrogen profile
@@ -30,7 +30,7 @@ class InOut
         static void writePhysicsInCheck(double * physicalParameters, string path_exec);
 
     // Write the output
-        static void writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint) ;
+        static void writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint, int geometry) ; // TODO: check if geometry is necessary
         static void writeOuput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint);
             
 };
