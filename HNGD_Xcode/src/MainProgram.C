@@ -56,33 +56,29 @@ int main(int argc, char* argv[])
   // Path to the folder to use /*custom*/
   string path_exec = "/Users/fpp8/OneDrive - The Pennsylvania State University/Hydride_Modeling/Further HNGD/HNGD_Xcode/HNGD_Xcode/" ;
   
-  // Default file names.
-  // These files will be used if no argument is given to the program when launched.
-  // These files must be in the folder defined by the path_exec variable
-  string settings_name = "1_settings.txt" ;
-  string treatment_name= "2_temperature.txt" ;
-  string physics_name  = "3_physics.txt" ;
-  string hydroIC_name  = "4_hydrogen.txt" ;
-  string output_name   = "output" ;
-  
   // Name of the folder containing the input files.
   // The input files specified by the argument given at
   // launch must be placed in this folder
   string input_folder = "input_files/" ;
   
-  // Argument reading
-  // The argument must be used as a prefix to all input files.
-  if(argc > 1)
-  {
-    string name(argv[1]);
-    
-    settings_name  = input_folder + name + "_set.txt" ;
-    treatment_name = input_folder + name + "_temp.txt";
-    physics_name   = input_folder + name + "_phys.txt";
-    hydroIC_name   = input_folder + name + "_hyd.txt" ;
-    output_name    = name + "_out.csv" ;
-  }
+  // Name of the simulation case
+  string name ;
   
+  // Default case name
+  string def_name = "ex_lin" ;
+  
+  if(argc > 1) // Argument reading
+    name = argv[1] ;
+  else
+    name = def_name ;
+    
+  string settings_name  = input_folder + name + "_set.txt" ;
+  string treatment_name = input_folder + name + "_temp.txt";
+  string physics_name   = input_folder + name + "_phys.txt";
+  string hydroIC_name   = input_folder + name + "_hyd.txt" ;
+  string output_name    = name + "_out.csv" ;
+
+
   output.open(path_exec + output_name, ios::out);
   if (output.fail())
   {
@@ -128,10 +124,7 @@ int main(int argc, char* argv[])
 
   // The HNGD object collects the input information to build
   // a Sample and the objects associated with each phenomenon
-//  HNGD hngd(settings, physicalParameters) ;
-  unsigned int n = pos_temp.size() - 1;
-  double xEnd = pos_temp[n];
-  HNGD hngd(settings, physicalParameters, xEnd, settings[6]) ; // TODO: less parameters
+  HNGD hngd(settings, physicalParameters) ;
   
   // Some of the settings are needed for the time loop
   int nbNodes        = settings[0];

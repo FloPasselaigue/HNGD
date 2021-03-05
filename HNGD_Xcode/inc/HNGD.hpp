@@ -19,7 +19,7 @@
 class HNGD
 {
     public:
-        HNGD(double* settings, double* physicalParameters, double xEnd, int geometry); //TODO: geometry is part of settings
+        HNGD(double* settings, double* physicalParameters);
         
     // Use the information taken from the input files to create the initial state
         void getInitialConditions(vector<double> pos_hyd, vector<double> hyd_inp,

@@ -30,7 +30,7 @@ class InOut
         static void writePhysicsInCheck(double * physicalParameters, string path_exec);
 
     // Write the output
-        static void writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint, int geometry) ; // TODO: check if geometry is necessary
+        static void writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint, int geometry) ; 
         static void writeOuput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, double t, double temp, int nbPosPrint, int* listPosPrint);
             
 };

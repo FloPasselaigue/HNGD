@@ -271,7 +271,7 @@ void InOut::writeOuput(HNGD hngd, string path_exec, string output_name, int nbNo
     output.close();
 }
 
-void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint, int geometry) // TODO: geometry does not need to be a parameter
+void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name, int nbNodes, int nbOutput, int nbPosPrint, int* listPosPrint, int geometry)
 {
   ofstream output ;
   output.open(path_exec + output_name, std::ios_base::app);
@@ -295,30 +295,6 @@ void InOut :: writeInitialOutput(HNGD hngd, string path_exec, string output_name
             }
             *(listPosPrint+nbPosPrint-1) = nbNodes-1;
         }
-      
-//        // Print the positions as column head
-//        for(int j=0; j<nbOutput; j++){
-//          for(int i=0; i<nbPosPrint; i++){
-//            output << positionVector[listPosPrint[i]] << "," ;
-//          }
-//          output << ',' ;
-//        }
-//        output << "\n" ;
-//
-//        output << "dt (s),Time (s)," ;
-//        string listOutputNames[nbOutput];
-//        /* HERE */
-//        listOutputNames[0] = "Ctot," ;
-//        listOutputNames[1] = "Css,"  ;
-//        listOutputNames[2] = "Cprec,";
-//        listOutputNames[3] = "TSSd," ;
-//        listOutputNames[4] = "TSSp," ;
-//        for(int j=0; j<nbOutput; j++){
-//          for(int i=0; i<nbPosPrint; i++) // Print the type of output as column "sub head"
-//            output << listOutputNames[j] ;
-//          output << ',' ;
-//        }
-//        output << '\n' ;
       
       output << "dt [s],Time [s]," ;
       string listOutputNames[nbOutput];

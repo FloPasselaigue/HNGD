@@ -33,6 +33,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5604D1CF25F2BD1100B22B0F /* ex_lin_set.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_lin_set.txt; sourceTree = "<group>"; };
+		5604D1D025F2BD1100B22B0F /* ex_pol_hyd.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_pol_hyd.txt; sourceTree = "<group>"; };
+		5604D1D125F2BD1100B22B0F /* ex_lin_temp.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_lin_temp.txt; sourceTree = "<group>"; };
+		5604D1D225F2BD1100B22B0F /* ex_lin_phys.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_lin_phys.txt; sourceTree = "<group>"; };
+		5604D1D325F2BD1200B22B0F /* ex_pol_set.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_pol_set.txt; sourceTree = "<group>"; };
+		5604D1D425F2BD1200B22B0F /* ex_pol_temp.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_pol_temp.txt; sourceTree = "<group>"; };
+		5604D1D525F2BD1200B22B0F /* ex_lin_hyd.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_lin_hyd.txt; sourceTree = "<group>"; };
+		5604D1D625F2BD1200B22B0F /* ex_pol_phys.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ex_pol_phys.txt; sourceTree = "<group>"; };
 		560637CA24697ECF00BAE0D5 /* HNGD_Xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HNGD_Xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		560637D424697F2D00BAE0D5 /* MainProgram.C */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = MainProgram.C; sourceTree = "<group>"; tabWidth = 2; };
 		560637E2246C73D300BAE0D5 /* InOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InOut.cpp; sourceTree = "<group>"; };
@@ -72,6 +80,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5604D1CE25F2BCBE00B22B0F /* input_files */ = {
+			isa = PBXGroup;
+			children = (
+				5604D1D525F2BD1200B22B0F /* ex_lin_hyd.txt */,
+				5604D1D225F2BD1100B22B0F /* ex_lin_phys.txt */,
+				5604D1CF25F2BD1100B22B0F /* ex_lin_set.txt */,
+				5604D1D125F2BD1100B22B0F /* ex_lin_temp.txt */,
+				5604D1D025F2BD1100B22B0F /* ex_pol_hyd.txt */,
+				5604D1D625F2BD1200B22B0F /* ex_pol_phys.txt */,
+				5604D1D325F2BD1200B22B0F /* ex_pol_set.txt */,
+				5604D1D425F2BD1200B22B0F /* ex_pol_temp.txt */,
+			);
+			path = input_files;
+			sourceTree = "<group>";
+		};
 		560637C124697ECF00BAE0D5 = {
 			isa = PBXGroup;
 			children = (
@@ -91,6 +114,7 @@
 		560637CC24697ECF00BAE0D5 /* HNGD_Xcode */ = {
 			isa = PBXGroup;
 			children = (
+				5604D1CE25F2BCBE00B22B0F /* input_files */,
 				562B5B6324EAA92600AE9F13 /* README.pdf */,
 				562B5B6424EAA92600AE9F13 /* zelda.mp3 */,
 				56383760248E7AF500596C98 /* inc */,

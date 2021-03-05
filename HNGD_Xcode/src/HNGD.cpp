@@ -1,7 +1,7 @@
 #include "HNGD.hpp"
 #include <iostream>
 
-HNGD :: HNGD(double* settings, double* physicalParameters, double xEnd, int geometry): //TODO: xEnd and geometry are in settings
+HNGD :: HNGD(double* settings, double* physicalParameters): 
 
     _sample(new Sample((int)settings[0],    // number of cells
                 settings[1],                // bias
@@ -43,9 +43,9 @@ HNGD :: HNGD(double* settings, double* physicalParameters, double xEnd, int geom
     _rateGro (& (_growth->returnRate())),           // Growth rate at each position
     _rateDis (& (_dissolution->returnRate()))       // Dissolution rate at each position
 {
-    _NbCells = (int)settings[0] ;  // Number of nodes
-    _geometry = (int)settings[6] ; // Geometry Type
-    _radius = (double)settings[2]; // Radius or Sample Length
+    _NbCells  = (int)settings[0] ;   // Number of nodes
+    _geometry = (int)settings[6] ;   // Geometry Type
+    _radius   = settings[2]; // Radius or Sample Length
     
     Precipitation :: defineEnergyPolynomial(
                     physicalParameters[3],  // Eth0
@@ -54,8 +54,13 @@ HNGD :: HNGD(double* settings, double* physicalParameters, double xEnd, int geom
                     physicalParameters[6]); // Eth3
     
     // Create geometry
-    _sample->computeLocations(0., xEnd, geometry) ;
-                        //   (0., sample length, geometry type)
+    double xEnd ;
+    if(_geometry==1)
+        xEnd = 2*M_PI ;
+    else
+        xEnd = settings[2] ;
+
+    _sample->computeLocations(0., xEnd, _geometry) ;
     
     // Time step management
     if(settings[3] < 0.)
