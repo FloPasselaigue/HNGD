@@ -64,8 +64,7 @@ void Precipitation :: compute_f_alpha(Sample* sample)
     for(int k=0; k<sample->returnNbCells(); k++)
     {
         // Hydride atom fraction
-//        double xhyd = (*_hydrideContent)[k] / (Mh * ((*_totalContent)[k]/Mh + (1e6 - (*_totalContent)[k])/Mzr)) ;
-        double xhyd = convertToAtomFrac((*_hydrideContent)[k]) ;
+        double xhyd = (*_hydrideContent)[k] / (Mh * ((*_totalContent)[k]/Mh + (1e6 - (*_totalContent)[k])/Mzr)) ;
         
         // alpha / alpha+delta boundaries
         double xdelta = compute_xdelta((*_temperature)[k]) ;
