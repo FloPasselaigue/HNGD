@@ -30,6 +30,9 @@ public:
     // Interpolate the input profile [refX; refY] on each point of the geometry
     void spatialeInterpolation(vector<double>& refX, vector<double>& refY, vector<double>& vectorY);
     
+    // Volume fraction
+    double vol_frac(int k) ;
+    
     // Getters
     const int returnNbCells() {return _nbCells;}
     
@@ -72,6 +75,7 @@ private:
     double _tau ;
     double _delta ;
     double _g ;
+    
 };
 
 

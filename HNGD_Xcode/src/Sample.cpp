@@ -46,19 +46,45 @@ void Sample :: computeTSS()
 {
     for(int k=0; k<_nbCells; k++)
     {
-//        _g = 2.11E-07 * exp(76051 / (R * _temperature[k]));
-//        _g = 24.8 - 0.0353 * _temperature[k] ;
+        
+        // Default solubility fit
+        double tssd = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
+        
+        // Hydride volume fraction
+        double vf = vol_frac(k) ;
+        
+        // Modifying function
+        double f_k = vf * (_g - ((1-_delta) * tssd + _g) * vf) ;
+        
+        // Modified solubility
+        _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) + f_k ;
 
-        double a = _delta - _g - 1 ;
-        double b = _g  ;
-        double c = 1. ;
-
-        _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
-        _tssd[k] *= a * pow(_hydrideContent[k]/17000, 2) + b * _hydrideContent[k]/17000 + c ;
-
+        
+        // Default supersolubility
         double tssp = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
+        
+        // Modified supersolubility
         _tssp[k] = _tssd[k] + (tssp - _tssd[k]) * exp(-_t_since_T_changed / _tau) ;
+
     }
+}
+
+double Sample :: vol_frac(int k)
+{
+        // At. fraction of H at delta / delta+alpha boundary
+    double T = _temperature[k] ;
+    double x_delta = -9.93e-11*pow(T,3) + 8.48e-8*pow(T,2) - 5.73e-5*T + 0.623 ;
+    
+        // At. fraction solubility
+    double x_alpha = _tssd[k]/Mh / (_tssd[k]/Mh + (1e6-_tssd[k])/Mzr) ;
+    
+        // Volume fraction
+    double vf = _hydrideContent[k] / Mh / (_totalContent[k]/Mh + (1e6-_totalContent[k])/Mzr) / (x_delta-x_alpha) ;
+    
+    if (vf > 1.)
+        vf = 1. ;
+    
+    return vf ;
 }
 
 // Domain definition

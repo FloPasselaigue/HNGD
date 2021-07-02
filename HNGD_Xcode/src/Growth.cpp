@@ -1,4 +1,5 @@
 #include "Growth.hpp"
+#include <iostream>
 
 Growth :: Growth(Sample* sample, double Kmob0, double Kth0, double Eg, double p) :
     Precipitation   (sample),
