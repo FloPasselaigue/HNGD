@@ -2,7 +2,8 @@
 #include "PhysicsConstants.h"
 #include <iostream>
 
-Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0, double Qd) :
+Sample :: Sample(int nbCells, double bias, double tssp0, double Qp,
+                 double tssd0, double Qd, double tau, double delta, double g):
 
     _nbCells(nbCells),
     _bias   (bias),
@@ -11,7 +12,12 @@ Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0
     _Qp     (Qp),
 
     _tssd0  (tssd0),
-    _Qd     (Qd)
+    _Qd     (Qd),
+
+    _tau    (tau),
+
+    _delta  (delta),
+    _g      (g)
 {
     _position       = vector<double>(_nbCells) ;
     _temperature    = vector<double>(_nbCells) ;
@@ -20,6 +26,8 @@ Sample :: Sample(int nbCells, double bias, double tssp0, double Qp, double tssd0
     _totalContent   = vector<double>(_nbCells) ;
     _tssd           = vector<double>(_nbCells) ;
     _tssp           = vector<double>(_nbCells) ;
+
+    _t_since_T_changed = 0. ;
 }
 
 // Compute the equilibrium for the initial conditions
@@ -38,9 +46,45 @@ void Sample :: computeTSS()
 {
     for(int k=0; k<_nbCells; k++)
     {
-        _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
-        _tssp[k] = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
+
+        // Default solubility fit
+        double tssd = _tssd0 * exp(-_Qd / (R * _temperature[k])) ;
+
+        // Hydride volume fraction
+        double vf = vol_frac(k) ;
+
+        // Modifying function
+        double f_k = vf * (_g - ((1-_delta) * tssd + _g) * vf) ;
+
+        // Modified solubility
+        _tssd[k] = _tssd0 * exp(-_Qd / (R * _temperature[k])) + f_k ;
+
+
+        // Default supersolubility
+        double tssp = _tssp0 * exp(-_Qp / (R * _temperature[k])) ;
+
+        // Modified supersolubility
+        _tssp[k] = _tssd[k] + (tssp - _tssd[k]) * exp(-_t_since_T_changed / _tau) ;
+
     }
+}
+
+double Sample :: vol_frac(int k)
+{
+        // At. fraction of H at delta / delta+alpha boundary
+    double T = _temperature[k] ;
+    double x_delta = -9.93e-11*pow(T,3) + 8.48e-8*pow(T,2) - 5.73e-5*T + 0.623 ;
+
+        // At. fraction solubility
+    double x_alpha = _tssd[k]/Mh / (_tssd[k]/Mh + (1e6-_tssd[k])/Mzr) ;
+
+        // Volume fraction
+    double vf = _hydrideContent[k] / Mh / (_totalContent[k]/Mh + (1e6-_totalContent[k])/Mzr) / (x_delta-x_alpha) ;
+
+    if (vf > 1.)
+        vf = 1. ;
+
+    return vf ;
 }
 
 // Domain definition
@@ -50,7 +94,7 @@ void Sample :: computeLocations(double x0, double xEnd, int _geometry)
     {
         // Polar
         // bias not implemented in polar geometry
-        
+
         const double initialLenght = 2*M_PI/_nbCells;
         _position[0] = x0 ;
         for (int k=1; k<_nbCells; k++)

@@ -9,7 +9,6 @@ double Precipitation::_Eth3(0.) ;
 
 vector<double> Precipitation::_lever_rule(0);
 vector<double> Precipitation::_f_alpha(0);
-vector<double> Precipitation::_chi(0);
 
 vector<double> * Precipitation::_hydrideContent = new vector<double>(0) ;
 vector<double> * Precipitation::_totalContent   = new vector<double>(0) ;
@@ -22,7 +21,6 @@ Precipitation :: Precipitation(Sample* sample):
 {
     _lever_rule .resize(sample->returnNbCells()) ;
     _f_alpha    .resize(sample->returnNbCells()) ;
-    _chi        .resize(sample->returnNbCells()) ;
     
     _hydrideContent = & (sample->returnHydrideContent()) ;
     _totalContent   = & (sample->returnTotalContent()) ;
@@ -34,7 +32,6 @@ void Precipitation :: computeCoeffs(Sample* sample)
 {
     compute_leverRule(sample) ;
     compute_f_alpha(sample) ;
-    compute_chi(sample) ;
 }
 
 // Formation energy fit
@@ -67,12 +64,12 @@ void Precipitation :: compute_f_alpha(Sample* sample)
     for(int k=0; k<sample->returnNbCells(); k++)
     {
         // Hydride atom fraction
-        double xhyd = convertToAtomFrac((*_hydrideContent)[k]) ;
+        double xhyd = (*_hydrideContent)[k] / (Mh * ((*_totalContent)[k]/Mh + (1e6 - (*_totalContent)[k])/Mzr)) ;
         
         // alpha / alpha+delta boundaries
         double xdelta = compute_xdelta((*_temperature)[k]) ;
         
-        _f_alpha[k] = 1. - xhyd / xdelta ;
+        _f_alpha[k] = 1. - xhyd / (xdelta - convertToAtomFrac((*_tssd)[k])) ;
     }
     
 }
@@ -94,10 +91,3 @@ void Precipitation :: compute_leverRule(Sample* sample)
     }
     
 }
-
-void Precipitation :: compute_chi(Sample* sample)
-{
-    for(int k=0; k<sample->returnNbCells(); k++)
-        _chi[k] = ((17000 - (*_hydrideContent)[k]) / 17000) ;
-}
-

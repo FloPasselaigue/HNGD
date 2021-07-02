@@ -115,15 +115,6 @@ vector<vector<double>> InOut::getThermalTreatment(string path_exec, string file_
         time_temp.pop_back();
     }
 
-//    for(int k=0; k<temp_inp.size(); k++)
-//    {
-//    chkinp << time_temp[k] ;
-//    for(int j=0; j<temp_inp[0].size(); j++)
-//      cout<< "\t" << temp_inp[k][j] ;
-//
-//    chkinp << endl ;
-//    }
-
     cout << "Number of specified temperature steps = " << i-1 << endl;
 
     double t_end = time_temp[i-1];

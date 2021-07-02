@@ -28,7 +28,6 @@ class Precipitation : public Mechanism
     
         static vector<double> _lever_rule ;
         static vector<double> _f_alpha ;
-        static vector<double> _chi ;
         
         static void compute_leverRule(Sample* sample) ;
         static void compute_f_alpha(Sample* sample) ;

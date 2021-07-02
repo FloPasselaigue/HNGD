@@ -1,0 +1,52 @@
+# Created by https://www.gitignore.io/api/xcode
+
+### Xcode ###
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore,
+#   Objective-C.gitignore & Swift.gitignore
+
+## Build generated
+build/
+DerivedData/
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+### Xcode Patch ###
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+
+# End of https://www.gitignore.io/api/xcode
+
+HNGD_Xcode.xcodeproj/xcshareddata/
+HNGD_Xcode/*.asv
+HNGD_Xcode/*.m
+HNGD_Xcode/outputs/
+HNGD_Xcode/plots/
+HNGD_Xcode/*.csv
+HNGD_Xcode/outputs/*
+HNGD_Xcode/plots/*
+HNGD_Xcode/data/*
+HNGD_Xcode/input_files/*
+HNGD_Xcode/input_check.txt
+
+HNGD_Xcode.xcodeproj/xcshareddata/xcschemes/HNGD_Xcode.xcscheme
+HNGD_Xcode.xcodeproj/xcshareddata/xcschemes/HNGD_Xcode_test.xcscheme
+HNGD_Xcode.xcodeproj/xcuserdata/fpp8.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist

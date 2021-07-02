@@ -8,7 +8,10 @@ HNGD :: HNGD(double* settings, double* physicalParameters):
                 physicalParameters[10],     // tssp0
                 physicalParameters[11],     // Qp
                 physicalParameters[12],     // tssd0
-                physicalParameters[13])),   // Qd
+                physicalParameters[13],     // Qd
+                physicalParameters[16],     // tau
+                physicalParameters[17],     // delta
+                physicalParameters[18])),   // g
 
     _dissolution(new Dissolution(_sample,
                  physicalParameters[0],     // Kd0
@@ -192,10 +195,19 @@ void HNGD :: compute()
 
 
 
-void HNGD :: getInput(vector<double> pos_temp, vector<double> temp_inp)
+void HNGD :: getInput(bool T_changed, vector<double> pos_temp, vector<double> temp_inp)
 {
-    // Update the state of the sample to compute the next state
-    _sample->spatialeInterpolation(pos_temp, temp_inp, _sample->returnTemperature());
+    if(T_changed)
+    {
+        // Update the state of the sample to compute the next state
+        _sample->spatialeInterpolation(pos_temp, temp_inp, _sample->returnTemperature());
+        
+        // Reset the time since last temperature change
+        _sample->reset_t_since_T_Changed() ;
+    }
+    
+    else
+        _sample->increment_t_since_T_changed(_dt) ;
 }
 
 
