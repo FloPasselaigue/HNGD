@@ -104,6 +104,14 @@ void Sample :: computeLocations(double x0, double xEnd, int _geometry)
     else
     {
         // Linear
+
+        // If the bias is negative, the mesh refinement is made on the "right" side
+        double bias ;
+        if(_bias < 0.)
+            bias = - _bias ;
+        else
+            bias = _bias ;
+
         double  sum = 1. + _bias ;
         for(int k=0; k<_nbCells-3; k++)
             sum = 1. + _bias*sum ;
@@ -117,6 +125,13 @@ void Sample :: computeLocations(double x0, double xEnd, int _geometry)
             _position[k] = _position[k-1] + _bias*(_position[k-1] - _position[k-2]) ;
 
         _position[_nbCells-1] = xEnd  ;
+
+        if(_bias < 0.)
+        {
+            reverse(_position.begin(), _position.end()) ;
+            for(int k=0; k<_nbCells; k++)
+                _position[k] = xEnd - _position[k] ;
+        }
     }
 }
 
