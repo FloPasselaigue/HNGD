@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   // Name of the folder containing the input files.
   // The input files specified by the argument given at
   // launch must be placed in this folder
-  string input_folder = "input_files_/" ;
+  string input_folder = "input_files/" ;
   
   // Name of the simulation case
   string name ;
