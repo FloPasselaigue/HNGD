@@ -15,5 +15,5 @@
 0.0108	 Do 	cm2/s		1.08e-2	/ 2.17e-3	Zhang / Sawatzky
 25500	 Q*	J/mol		25500	/ 25104
 10000	 tau	s
-0.6	 delta	#
-6	 g	wt.ppm
+1.05	 delta	#
+120	     g	wt.ppm
