@@ -10,3 +10,11 @@ The implementation of the first version of this code is presented in F. Passelai
 The current version (labeled mHNGD model) is based on F. Passelaigue, P.-C. A. Simon, A. T. Motta “Predicting the hydride rim by improving the solubility limits in the Hydride Nucleation-Growth-Dissolution (HNGD) model.” Journal of Nuclear Materials (submitted) 
 
 The folder HNGD_Xcode contains a README.pdf file detailing the structure of the code and how to use it.
+
+The work in this repository can be cited using the BibTex command below:
+
+@misc{github,
+title={{Github repository for a C++ implementation of the HNGD model: https://github.com/FloPasselaigue/HNGD}},
+author = {Passelaigue, F.},
+url={https://github.com/FloPasselaigue/HNGD}
+}
